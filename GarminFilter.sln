@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{94B9071A-7D44-40A5-B388-E6E8CEADA847}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DCA9C338-8859-4A6F-944B-C66209D64532}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFilter.Api", "src\GarminFilter.Api\GarminFilter.Api.csproj", "{EFDBBEC2-66A4-4197-9EC7-2641FFE48BF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFilter.Domain", "src\GarminFilter.Domain\GarminFilter.Domain.csproj", "{1798B78F-C82B-46EA-B875-10236F68FE5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFilter.Infrastructure", "src\GarminFilter.Infrastructure\GarminFilter.Infrastructure.csproj", "{CA389E40-5884-4C30-9643-BBC49C949B24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_items", "_items", "{E289B1DE-0BE6-4B10-B7CB-402A197BBDE1}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+		Directory.Build.props = Directory.Build.props
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFilter.IntegrationTests", "tests\GarminFilter.IntegrationTests\GarminFilter.IntegrationTests.csproj", "{8725E60F-6410-4952-BE56-9E3062CC8B18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFilter.UnitTests", "tests\GarminFilter.UnitTests\GarminFilter.UnitTests.csproj", "{37946E6E-2BBD-404B-AACE-AE6475777096}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EFDBBEC2-66A4-4197-9EC7-2641FFE48BF1} = {94B9071A-7D44-40A5-B388-E6E8CEADA847}
+		{1798B78F-C82B-46EA-B875-10236F68FE5D} = {94B9071A-7D44-40A5-B388-E6E8CEADA847}
+		{CA389E40-5884-4C30-9643-BBC49C949B24} = {94B9071A-7D44-40A5-B388-E6E8CEADA847}
+		{8725E60F-6410-4952-BE56-9E3062CC8B18} = {DCA9C338-8859-4A6F-944B-C66209D64532}
+		{37946E6E-2BBD-404B-AACE-AE6475777096} = {DCA9C338-8859-4A6F-944B-C66209D64532}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFDBBEC2-66A4-4197-9EC7-2641FFE48BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFDBBEC2-66A4-4197-9EC7-2641FFE48BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFDBBEC2-66A4-4197-9EC7-2641FFE48BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFDBBEC2-66A4-4197-9EC7-2641FFE48BF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1798B78F-C82B-46EA-B875-10236F68FE5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1798B78F-C82B-46EA-B875-10236F68FE5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1798B78F-C82B-46EA-B875-10236F68FE5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1798B78F-C82B-46EA-B875-10236F68FE5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA389E40-5884-4C30-9643-BBC49C949B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA389E40-5884-4C30-9643-BBC49C949B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA389E40-5884-4C30-9643-BBC49C949B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA389E40-5884-4C30-9643-BBC49C949B24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8725E60F-6410-4952-BE56-9E3062CC8B18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8725E60F-6410-4952-BE56-9E3062CC8B18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8725E60F-6410-4952-BE56-9E3062CC8B18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8725E60F-6410-4952-BE56-9E3062CC8B18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37946E6E-2BBD-404B-AACE-AE6475777096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37946E6E-2BBD-404B-AACE-AE6475777096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37946E6E-2BBD-404B-AACE-AE6475777096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37946E6E-2BBD-404B-AACE-AE6475777096}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
