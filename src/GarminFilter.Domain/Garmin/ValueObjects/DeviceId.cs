@@ -1,9 +1,9 @@
 namespace GarminFilter.Domain.Garmin.ValueObjects;
 
 [StrongTypedValueJsonConverterFactory]
-public class DeviceId : StrongTypedId<DeviceId, uint>
+public class DeviceId : StrongTypedId<DeviceId, int>
 {
-	public DeviceId(uint value) : base(value)
+	public DeviceId(int value) : base(value)
 	{
 	}
 }

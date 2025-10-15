@@ -3,6 +3,6 @@ using GarminFilter.Domain.Shared.Repositories;
 
 namespace GarminFilter.Domain.Garmin.Repositories;
 
-public interface IDeviceAggregateRepository : IAggregateRepository<GarminDevice, DeviceId>
+public interface IGarminDeviceRepository : IAggregateRepository<GarminDevice, DeviceId>
 {
 }

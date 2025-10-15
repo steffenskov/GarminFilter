@@ -9,7 +9,7 @@ internal abstract class BaseAggregateRepository<T, TId> : IAggregateRepository<T
 	where T : IAggregate<TId>
 	where TId : IStrongTypedId
 {
-	private readonly ILiteCollection<T> _collection;
+	protected readonly ILiteCollection<T> _collection;
 
 	protected BaseAggregateRepository(LiteDatabase db, string collectionName)
 	{
@@ -26,8 +26,5 @@ internal abstract class BaseAggregateRepository<T, TId> : IAggregateRepository<T
 		_collection.Upsert(entity);
 	}
 
-	public T? GetSingle(TId id)
-	{
-		return _collection.FindOne(e => e.Id.Equals(id));
-	}
+	public abstract T? GetSingle(TId id);
 }

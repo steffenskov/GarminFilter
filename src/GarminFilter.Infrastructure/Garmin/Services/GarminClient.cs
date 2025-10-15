@@ -2,18 +2,19 @@ namespace GarminFilter.Infrastructure.Garmin.Services;
 
 internal class GarminClient : IGarminClient
 {
-	private readonly HttpClient _httpClient;
+	private readonly IHttpClientFactory _httpClientFactory;
 	private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-	public GarminClient(HttpClient httpClient, JsonSerializerOptions jsonSerializerOptions)
+	public GarminClient(IHttpClientFactory httpClientFactory, JsonSerializerOptions jsonSerializerOptions)
 	{
-		_httpClient = httpClient;
+		_httpClientFactory = httpClientFactory;
 		_jsonSerializerOptions = jsonSerializerOptions;
 	}
 
 	public async Task<IEnumerable<GarminDevice>> GetDevicesAsync(CancellationToken cancellationToken = default)
 	{
-		var response = await _httpClient.GetAsync("/deviceTypes", cancellationToken);
+		using var client = _httpClientFactory.CreateClient(nameof(GarminClient));
+		var response = await client.GetAsync("/deviceTypes", cancellationToken);
 		response.EnsureSuccessStatusCode();
 
 		var json = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -23,7 +24,8 @@ internal class GarminClient : IGarminClient
 
 	public async Task<IEnumerable<GarminApp>> GetAppsAsync(int pageIndex, CancellationToken cancellationToken = default)
 	{
-		var response = await _httpClient.GetAsync($"/apps?startPageIndex={pageIndex}&pageSize=30&sortType=mostRecent", cancellationToken);
+		using var client = _httpClientFactory.CreateClient(nameof(GarminClient));
+		var response = await client.GetAsync($"/apps?startPageIndex={pageIndex}&pageSize=30&sortType=mostRecent", cancellationToken);
 		response.EnsureSuccessStatusCode();
 
 		var json = await response.Content.ReadAsStringAsync(cancellationToken);

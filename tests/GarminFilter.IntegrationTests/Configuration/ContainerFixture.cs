@@ -8,7 +8,7 @@ public class ContainerFixture
 	public ContainerFixture()
 	{
 		var services = new ServiceCollection();
-		services.AddDomain();
+		services.AddDomain(":memory:");
 		Provider = services.BuildServiceProvider();
 	}
 
