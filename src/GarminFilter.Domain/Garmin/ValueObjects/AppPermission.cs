@@ -19,5 +19,8 @@ public enum AppPermissions
 	SensorHistory,
 	UserProfile,
 	Communications,
-	ComplicationSubscriber
+	ComplicationSubscriber,
+	PushNotification,
+	BluetoothLowEnergy,
+	Sensor
 }

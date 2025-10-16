@@ -26,5 +26,10 @@ internal abstract class BaseAggregateRepository<T, TId> : IAggregateRepository<T
 		_collection.Upsert(entity);
 	}
 
+	public void Upsert(IEnumerable<T> entities)
+	{
+		_collection.Upsert(entities);
+	}
+
 	public abstract T? GetSingle(TId id);
 }

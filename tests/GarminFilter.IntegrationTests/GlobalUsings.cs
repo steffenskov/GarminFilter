@@ -1,4 +1,5 @@
 // Global using directives
 
-global using GarminFilter.Infrastructure.Garmin.Services;
+global using FreeMediator;
 global using GarminFilter.IntegrationTests.Configuration;
+global using Microsoft.Extensions.DependencyInjection;

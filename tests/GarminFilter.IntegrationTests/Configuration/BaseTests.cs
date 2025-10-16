@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace GarminFilter.IntegrationTests.Configuration;
 
 [Collection(Consts.Collection)]

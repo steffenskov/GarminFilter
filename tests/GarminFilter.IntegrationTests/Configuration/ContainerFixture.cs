@@ -1,5 +1,5 @@
 using GarminFilter.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
+using GarminFilter.Infrastructure.Garmin.Policies;
 
 namespace GarminFilter.IntegrationTests.Configuration;
 
@@ -8,7 +8,7 @@ public class ContainerFixture
 	public ContainerFixture()
 	{
 		var services = new ServiceCollection();
-		services.AddDomain(":memory:");
+		services.AddDomain(":memory:", new NoDelayPolicy());
 		Provider = services.BuildServiceProvider();
 	}
 

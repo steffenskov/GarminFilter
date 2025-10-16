@@ -1,5 +1,5 @@
 using GarminFilter.Domain.Garmin.Services;
-using Microsoft.Extensions.DependencyInjection;
+using GarminFilter.Domain.Garmin.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.Garmin.Services;
 
@@ -20,5 +20,15 @@ public class GarminClientTests : BaseTests
 
 		// Assert
 		Assert.NotEmpty(devices);
+	}
+
+	[Fact]
+	public async Task GetAppsAsync_Valid_ReturnsApps()
+	{
+		// Act
+		var apps = await _client.GetAppsAsync(0, AppTypes.WatchFace);
+
+		// Assert
+		Assert.NotEmpty(apps);
 	}
 }

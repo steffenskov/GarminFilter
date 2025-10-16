@@ -11,10 +11,11 @@ internal class GarminClient : IGarminClient
 		_jsonSerializerOptions = jsonSerializerOptions;
 	}
 
-	public async Task<IEnumerable<GarminDevice>> GetDevicesAsync(CancellationToken cancellationToken = default)
+	public async Task<IList<GarminDevice>> GetDevicesAsync(CancellationToken cancellationToken = default)
 	{
 		using var client = _httpClientFactory.CreateClient(nameof(GarminClient));
-		var response = await client.GetAsync("/deviceTypes", cancellationToken);
+
+		var response = await client.GetAsync("deviceTypes", cancellationToken);
 		response.EnsureSuccessStatusCode();
 
 		var json = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -22,10 +23,11 @@ internal class GarminClient : IGarminClient
 		return JsonSerializer.Deserialize<GarminDevice[]>(json, _jsonSerializerOptions) ?? throw new JsonException("Failed to deserialize devices");
 	}
 
-	public async Task<IEnumerable<GarminApp>> GetAppsAsync(int pageIndex, CancellationToken cancellationToken = default)
+	public async Task<IList<GarminApp>> GetAppsAsync(int pageIndex, AppType type, CancellationToken cancellationToken = default)
 	{
+		var url = $"apps?startPageIndex={pageIndex}&pageSize={Consts.App.PageSize}&sortType=mostRecent&appType={type.ToString().ToLower()}";
 		using var client = _httpClientFactory.CreateClient(nameof(GarminClient));
-		var response = await client.GetAsync($"/apps?startPageIndex={pageIndex}&pageSize=30&sortType=mostRecent", cancellationToken);
+		var response = await client.GetAsync(url, cancellationToken);
 		response.EnsureSuccessStatusCode();
 
 		var json = await response.Content.ReadAsStringAsync(cancellationToken);

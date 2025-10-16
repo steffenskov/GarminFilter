@@ -1,5 +1,3 @@
-using GarminFilter.Domain.Shared.Aggregates;
-
 namespace GarminFilter.Domain.Garmin.Aggregates;
 
 public record GarminDevice : IAggregate<DeviceId>

@@ -4,6 +4,6 @@ namespace GarminFilter.Domain.Garmin.Services;
 
 public interface IGarminClient
 {
-	Task<IEnumerable<GarminDevice>> GetDevicesAsync(CancellationToken cancellationToken = default);
-	Task<IEnumerable<GarminApp>> GetAppsAsync(int pageIndex, CancellationToken cancellationToken = default);
+	Task<IList<GarminDevice>> GetDevicesAsync(CancellationToken cancellationToken = default);
+	Task<IList<GarminApp>> GetAppsAsync(int pageIndex, AppType type, CancellationToken cancellationToken = default);
 }

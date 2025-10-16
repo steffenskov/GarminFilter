@@ -23,4 +23,8 @@
         <ProjectReference Include="..\..\src\GarminFilter.Infrastructure\GarminFilter.Infrastructure.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Garmin\Device\"/>
+    </ItemGroup>
+
 </Project>

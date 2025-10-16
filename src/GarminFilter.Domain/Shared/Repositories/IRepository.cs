@@ -1,5 +1,3 @@
-using GarminFilter.Domain.Shared.Aggregates;
-
 namespace GarminFilter.Domain.Shared.Repositories;
 
 public interface IAggregateRepository<T, in TId>
@@ -8,5 +6,6 @@ public interface IAggregateRepository<T, in TId>
 {
 	IEnumerable<T> GetAll();
 	void Upsert(T entity);
+	void Upsert(IEnumerable<T> entities);
 	T? GetSingle(TId id);
 }

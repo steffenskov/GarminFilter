@@ -17,7 +17,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Ckode.ServiceLocator"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
+        <PackageReference Include="NSwag.AspNetCore"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GarminFilter.Domain\GarminFilter.Domain.csproj"/>
+        <ProjectReference Include="..\GarminFilter.Infrastructure\GarminFilter.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>
