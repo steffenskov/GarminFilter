@@ -1,6 +1,6 @@
-using GarminFilter.Domain.Garmin.Aggregates;
-using GarminFilter.Domain.Garmin.Repositories;
-using GarminFilter.Domain.Garmin.ValueObjects;
+using GarminFilter.Domain.Device.Aggregates;
+using GarminFilter.Domain.Device.Repositories;
+using GarminFilter.Domain.Device.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.Garmin.Device.Repository;
 

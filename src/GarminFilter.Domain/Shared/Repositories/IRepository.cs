@@ -2,7 +2,7 @@ namespace GarminFilter.Domain.Shared.Repositories;
 
 public interface IAggregateRepository<T, in TId>
 	where T : IAggregate<TId>
-	where TId : IStrongTypedId
+	where TId : IStrongTypedValue
 {
 	IEnumerable<T> GetAll();
 	void Upsert(T entity);

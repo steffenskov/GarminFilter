@@ -1,7 +1,11 @@
-using GarminFilter.Domain.Garmin.Commands.App;
-using GarminFilter.Domain.Garmin.Policies;
-using GarminFilter.Domain.Garmin.Queries.App;
-using GarminFilter.Infrastructure.Garmin.Policies;
+using System.Diagnostics;
+using GarminFilter.Domain.App.Commands;
+using GarminFilter.Domain.App.Queries;
+using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.Domain.Policies;
+using GarminFilter.Domain.Services;
+using GarminFilter.Domain.Sync.Commands;
+using GarminFilter.Domain.Sync.Queries;
 
 namespace GarminFilter.Infrastructure.Garmin.Services;
 
@@ -25,26 +29,47 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 
 	public async Task SynchronizeAsync(CancellationToken cancellationToken = default)
 	{
-		var pageIndex = 0; // TODO: Figure out how to do a *whole* run before doing the "if exists, break" strategy
+		var state = await _mediator.Send(new SyncStateGetSingleQuery(_appType), cancellationToken);
+		var pageIndex = 0;
+
+
+		if (state is not null && !state.InitialSyncCompleted)
+		{
+			pageIndex = state.PageIndex ?? throw new UnreachableException("State has null PageIndex despite not being InitialSyncCompleted");
+		}
+
 		do
 		{
 			var apps = await _client.GetAppsAsync(pageIndex, _appType, cancellationToken);
 			if (apps.Count == 0)
 			{
-				break;
+				await _mediator.Send(new SyncStateInitialCompletedCommand(_appType), cancellationToken);
+				return;
 			}
 
+			var existsCount = 0;
 			foreach (var app in apps)
 			{
 				var exists = await _mediator.Send(new AppExistsQuery(app.Id), cancellationToken);
 				if (exists)
 				{
-					_logger?.LogInformation("App {id} already exists, stopping {appType} sync.", app.Id, _appType);
-					return; // All caught up, no more sync needed
+					existsCount++;
+					continue;
 				}
 
 				_logger?.LogInformation("Upserting App {id}: {app}", app.Id, app);
 				await _mediator.Send(new AppUpsertCommand(app), cancellationToken);
+			}
+
+			if (state?.InitialSyncCompleted == true && existsCount == apps.Count) // Found no new apps, break
+			{
+				_logger?.LogInformation("All apps fetched already exists, stopping {appType} sync.", _appType);
+				return;
+			}
+
+			if (state?.InitialSyncCompleted != true)
+			{
+				await _mediator.Send(new SyncStatePageMovedCommand(_appType, pageIndex), cancellationToken);
 			}
 
 			await _delayPolicy.WaitForDelayAsync(cancellationToken); // Do not spam the API

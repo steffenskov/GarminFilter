@@ -1,3 +1,8 @@
+using GarminFilter.Domain.App.Aggregates;
+using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.Domain.Device.Aggregates;
+using GarminFilter.Domain.Services;
+
 namespace GarminFilter.Infrastructure.Garmin.Services;
 
 internal class GarminClient : IGarminClient

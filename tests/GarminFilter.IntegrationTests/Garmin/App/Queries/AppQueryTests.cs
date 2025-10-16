@@ -1,7 +1,8 @@
-using GarminFilter.Domain.Garmin.Aggregates;
-using GarminFilter.Domain.Garmin.Commands.App;
-using GarminFilter.Domain.Garmin.Queries.App;
-using GarminFilter.Domain.Garmin.ValueObjects;
+using GarminFilter.Domain.App.Aggregates;
+using GarminFilter.Domain.App.Commands;
+using GarminFilter.Domain.App.Queries;
+using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.Domain.Device.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.Garmin.App.Queries;
 

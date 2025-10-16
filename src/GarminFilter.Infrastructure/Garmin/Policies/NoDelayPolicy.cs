@@ -1,4 +1,4 @@
-using GarminFilter.Domain.Garmin.Policies;
+using GarminFilter.Domain.Policies;
 
 namespace GarminFilter.Infrastructure.Garmin.Policies;
 

@@ -1,8 +1,12 @@
 using System.Net;
 using System.Text.Json.Serialization;
 using GarminFilter.Domain;
-using GarminFilter.Domain.Garmin.Policies;
-using GarminFilter.Infrastructure.Garmin.Policies;
+using GarminFilter.Domain.App.Repositories;
+using GarminFilter.Domain.Device.Repositories;
+using GarminFilter.Domain.Device.ValueObjects;
+using GarminFilter.Domain.Policies;
+using GarminFilter.Domain.Services;
+using GarminFilter.Domain.Sync.Repositories;
 using GarminFilter.Infrastructure.Garmin.Repositories;
 using GarminFilter.Infrastructure.Garmin.Services;
 using LiteDB;
@@ -18,8 +22,10 @@ public static class Setup
 		var mapper = StrongTypedLiteDB.CreateBsonMapper(typeof(DeviceId).Assembly);
 		var db = new LiteDatabase(dbName, mapper);
 		services.AddSingleton(db);
+		services.AddSingleton(delayPolicy);
 		services.AddSingleton<IGarminDeviceRepository, GarminDeviceRepository>();
 		services.AddSingleton<IGarminAppRepository, GarminAppRepository>();
+		services.AddSingleton<ISyncStateRepository, SyncStateRepository>();
 
 		services.AddHttpClient<GarminClient>(client =>
 		{

@@ -1,3 +1,5 @@
+using GarminFilter.Domain.App.ValueObjects;
+
 namespace GarminFilter.UnitTests.Garmin.ValueObjects;
 
 public class AppTypeTests

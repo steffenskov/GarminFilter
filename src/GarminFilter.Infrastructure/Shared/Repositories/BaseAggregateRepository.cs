@@ -7,7 +7,7 @@ namespace GarminFilter.Infrastructure.Shared.Repositories;
 
 internal abstract class BaseAggregateRepository<T, TId> : IAggregateRepository<T, TId>
 	where T : IAggregate<TId>
-	where TId : IStrongTypedId
+	where TId : IStrongTypedValue
 {
 	protected readonly ILiteCollection<T> _collection;
 

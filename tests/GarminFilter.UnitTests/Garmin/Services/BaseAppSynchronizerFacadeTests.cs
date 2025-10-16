@@ -1,6 +1,8 @@
 using FreeMediator;
-using GarminFilter.Domain.Garmin.Commands.App;
-using GarminFilter.Domain.Garmin.Services;
+using GarminFilter.Domain.App.Aggregates;
+using GarminFilter.Domain.App.Commands;
+using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.Domain.Services;
 using GarminFilter.Infrastructure.Garmin.Policies;
 using GarminFilter.Infrastructure.Garmin.Services;
 

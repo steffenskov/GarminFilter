@@ -1,4 +1,4 @@
-using GarminFilter.Domain.Garmin.Services;
+using GarminFilter.Domain.Services;
 
 namespace GarminFilter.Api.Services;
 

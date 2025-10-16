@@ -1,4 +1,4 @@
-using GarminFilter.Domain.Garmin.Policies;
+using GarminFilter.Domain.Policies;
 
 namespace GarminFilter.Infrastructure.Garmin.Policies;
 
@@ -10,7 +10,7 @@ public class DelayPolicy : IDelayPolicy
 	{
 		_delay = delay;
 	}
-	
+
 	public async ValueTask WaitForDelayAsync(CancellationToken cancellationToken = default)
 	{
 		await Task.Delay(_delay, cancellationToken);

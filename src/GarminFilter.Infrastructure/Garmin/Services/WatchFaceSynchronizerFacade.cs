@@ -1,5 +1,6 @@
-using GarminFilter.Domain.Garmin.Policies;
-using GarminFilter.Infrastructure.Garmin.Policies;
+using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.Domain.Policies;
+using GarminFilter.Domain.Services;
 
 namespace GarminFilter.Infrastructure.Garmin.Services;
 

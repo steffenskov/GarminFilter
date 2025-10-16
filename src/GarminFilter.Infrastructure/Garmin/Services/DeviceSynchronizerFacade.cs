@@ -1,4 +1,5 @@
-using GarminFilter.Domain.Garmin.Commands.Device;
+using GarminFilter.Domain.Device.Commands;
+using GarminFilter.Domain.Services;
 
 namespace GarminFilter.Infrastructure.Garmin.Services;
 

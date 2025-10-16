@@ -1,3 +1,6 @@
+using GarminFilter.Domain.Device.Aggregates;
+using GarminFilter.Domain.Device.Repositories;
+using GarminFilter.Domain.Device.ValueObjects;
 using LiteDB;
 
 namespace GarminFilter.Infrastructure.Garmin.Repositories;

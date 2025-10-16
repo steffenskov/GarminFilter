@@ -1,4 +1,4 @@
-using GarminFilter.Domain.Garmin.ValueObjects;
+using GarminFilter.Domain.App.ValueObjects;
 
 namespace GarminFilter.Api.Endpoints;
 
