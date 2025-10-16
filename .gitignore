@@ -57,3 +57,6 @@ nunit-*.xml
 *.DotSettings.user
 coverage-report
 TestResults
+
+garmin.db
+garmin-log.db
