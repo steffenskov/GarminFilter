@@ -5,7 +5,7 @@ using GarminFilter.Domain.Device.ValueObjects;
 
 namespace GarminFilter.Domain.App.Queries;
 
-public record AppQuery(DeviceId DeviceId, AppType Type) : IRequest<IEnumerable<GarminApp>>;
+public record AppQuery(DeviceId DeviceId, AppType Type, HashSet<AppPermission> ExcludePermissions) : IRequest<IEnumerable<GarminApp>>;
 
 file sealed class Handler : IRequestHandler<AppQuery, IEnumerable<GarminApp>>
 {
@@ -18,7 +18,7 @@ file sealed class Handler : IRequestHandler<AppQuery, IEnumerable<GarminApp>>
 
 	public Task<IEnumerable<GarminApp>> Handle(AppQuery request, CancellationToken cancellationToken)
 	{
-		var result = _repository.Query(request.DeviceId, request.Type);
+		var result = _repository.Query(request.DeviceId, request.Type, request.ExcludePermissions);
 
 		return Task.FromResult(result);
 	}

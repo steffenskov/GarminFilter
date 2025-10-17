@@ -1,9 +1,9 @@
-using System.Diagnostics;
 using GarminFilter.Domain.App.Commands;
 using GarminFilter.Domain.App.Queries;
 using GarminFilter.Domain.App.ValueObjects;
 using GarminFilter.Domain.Policies;
 using GarminFilter.Domain.Services;
+using GarminFilter.Domain.Sync.Aggregates;
 using GarminFilter.Domain.Sync.Commands;
 using GarminFilter.Domain.Sync.Queries;
 
@@ -30,20 +30,26 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 	public async Task SynchronizeAsync(CancellationToken cancellationToken = default)
 	{
 		var state = await _mediator.Send(new SyncStateGetSingleQuery(_appType), cancellationToken);
-		var pageIndex = 0;
 
-
-		if (state is not null && !state.InitialSyncCompleted)
+		if (state?.InitialSyncCompleted == true)
 		{
-			pageIndex = state.PageIndex ?? throw new UnreachableException("State has null PageIndex despite not being InitialSyncCompleted");
+			await SynchronizeLatestAsync(cancellationToken);
 		}
+		else
+		{
+			await SynchronizeInitialAsync(state, cancellationToken);
+		}
+	}
+
+	private async Task SynchronizeLatestAsync(CancellationToken cancellationToken)
+	{
+		var pageIndex = 0;
 
 		do
 		{
 			var apps = await _client.GetAppsAsync(pageIndex, _appType, cancellationToken);
 			if (apps.Count == 0)
 			{
-				await _mediator.Send(new SyncStateInitialCompletedCommand(_appType), cancellationToken);
 				return;
 			}
 
@@ -61,16 +67,36 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 				await _mediator.Send(new AppUpsertCommand(app), cancellationToken);
 			}
 
-			if (state?.InitialSyncCompleted == true && existsCount == apps.Count) // Found no new apps, break
+			if (existsCount == apps.Count) // Found no new apps, break
 			{
 				_logger?.LogInformation("All apps fetched already exists, stopping {appType} sync.", _appType);
 				return;
 			}
 
-			if (state?.InitialSyncCompleted != true)
+			await _delayPolicy.WaitForDelayAsync(cancellationToken); // Do not spam the API
+		} while ((pageIndex += Consts.App.PageSize) < int.MaxValue);
+	}
+
+	private async Task SynchronizeInitialAsync(SyncState? state, CancellationToken cancellationToken)
+	{
+		var pageIndex = state?.PageIndex ?? 0;
+
+		do
+		{
+			var apps = await _client.GetAppsAsync(pageIndex, _appType, cancellationToken);
+			if (apps.Count == 0)
 			{
-				await _mediator.Send(new SyncStatePageMovedCommand(_appType, pageIndex), cancellationToken);
+				await _mediator.Send(new SyncStateInitialCompletedCommand(_appType), cancellationToken);
+				return;
 			}
+
+			foreach (var app in apps)
+			{
+				_logger?.LogInformation("Upserting App {id}: {app}", app.Id, app);
+				await _mediator.Send(new AppUpsertCommand(app), cancellationToken);
+			}
+
+			await _mediator.Send(new SyncStatePageMovedCommand(_appType, pageIndex), cancellationToken);
 
 			await _delayPolicy.WaitForDelayAsync(cancellationToken); // Do not spam the API
 		} while ((pageIndex += Consts.App.PageSize) < int.MaxValue);

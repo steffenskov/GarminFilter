@@ -54,7 +54,7 @@ public class AppQueryTests : BaseTests
 		await _mediator.Send(new AppUpsertCommand(otherTypeApp));
 		await _mediator.Send(new AppUpsertCommand(incompatibleDeviceApp));
 
-		var query = new AppQuery(myDevice, AppTypes.WatchFace);
+		var query = new AppQuery(myDevice, AppTypes.WatchFace, []);
 
 		// Act
 		var result = (await _mediator.Send(query)).ToList();

@@ -23,5 +23,6 @@ public enum AppPermissions
 	PushNotification,
 	BluetoothLowEnergy,
 	Sensor,
-	Notifications
+	Notifications,
+	Ant
 }

@@ -5,14 +5,26 @@ namespace GarminFilter.Api.Models;
 
 public class AppViewModel
 {
-	public AppViewModel(GarminApp app)
+	public AppViewModel(IGarminApp app)
 	{
 		Id = app.Id;
-		Name = app.AppLocalizations.FirstOrDefault()?.Name ?? "Unknown name";
+		Name = app.Name;
 		Type = app.TypeId;
+		ImageUrl = $"https://services.garmin.com/appsLibraryExternalServices/api/icons/{app.IconFileId}";
+		Url = $"https://apps.garmin.com/apps/{app.Id}";
+		IsPaid = app.IsPaid;
+		Permissions = app.Permissions;
 	}
 
-	public AppType Type { get; set; }
+	public HashSet<AppPermission> Permissions { get; }
+
+	public bool IsPaid { get; }
+
+	public string Url { get; }
+
+	public string ImageUrl { get; }
+
+	public AppType Type { get; }
 
 	public AppId Id { get; }
 	public string Name { get; }

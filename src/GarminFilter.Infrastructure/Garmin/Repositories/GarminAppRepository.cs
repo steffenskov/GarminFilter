@@ -18,9 +18,10 @@ internal class GarminAppRepository : BaseAggregateRepository<GarminApp, AppId>, 
 		return _collection.Exists(aggregate => aggregate.Id == id);
 	}
 
-	public IEnumerable<GarminApp> Query(DeviceId deviceId, AppType type)
+	public IEnumerable<GarminApp> Query(DeviceId deviceId, AppType type, ISet<AppPermission> excludePermissions)
 	{
-		return _collection.Find(aggregate => aggregate.TypeId == type && aggregate.CompatibleDeviceTypeIds.Contains(deviceId));
+		return _collection.Find(aggregate =>
+			aggregate.TypeId == type && aggregate.CompatibleDeviceTypeIds.Contains(deviceId) && !excludePermissions.Any(permission => aggregate.Permissions.Contains(permission)));
 	}
 
 	public IEnumerable<GarminApp> GetByType(AppType type)
