@@ -6,6 +6,6 @@ public interface IAggregateRepository<T, in TId>
 {
 	IEnumerable<T> GetAll();
 	void Upsert(T entity);
-	void Upsert(IEnumerable<T> entities);
+	void Upsert(params IEnumerable<T> entities);
 	T? GetSingle(TId id);
 }

@@ -1,18 +1,20 @@
 using GarminFilter.Domain.App.Aggregates;
-using GarminFilter.Domain.App.Commands;
 using GarminFilter.Domain.App.Queries;
+using GarminFilter.Domain.App.Repositories;
 using GarminFilter.Domain.App.ValueObjects;
 using GarminFilter.Domain.Device.ValueObjects;
 
-namespace GarminFilter.IntegrationTests.Garmin.App.Queries;
+namespace GarminFilter.IntegrationTests.App.Queries;
 
 public class AppQueryTests : BaseTests
 {
 	private readonly IMediator _mediator;
+	private readonly IGarminAppRepository _repository;
 
 	public AppQueryTests(ContainerFixture fixture) : base(fixture)
 	{
 		_mediator = fixture.Provider.GetRequiredService<IMediator>();
+		_repository = fixture.Provider.GetRequiredService<IGarminAppRepository>();
 	}
 
 	[Fact]
@@ -48,7 +50,7 @@ public class AppQueryTests : BaseTests
 			Id = AppId.New(),
 			CompatibleDeviceTypeIds = [otherDevice]
 		};
-		var incompatiblePermission = new GarminApp
+		var incompatiblePermission1 = new GarminApp
 		{
 			TypeId = AppTypes.WatchFace,
 			Id = AppId.New(),
@@ -74,15 +76,9 @@ public class AppQueryTests : BaseTests
 			}
 		};
 
-		await _mediator.Send(new AppUpsertCommand(includedApp1));
-		await _mediator.Send(new AppUpsertCommand(includedApp2));
-		await _mediator.Send(new AppUpsertCommand(otherTypeApp));
-		await _mediator.Send(new AppUpsertCommand(incompatibleDeviceApp));
-		await _mediator.Send(new AppUpsertCommand(incompatiblePermission));
-		await _mediator.Send(new AppUpsertCommand(incompatiblePermission2));
-		await _mediator.Send(new AppUpsertCommand(paidApp));
+		_repository.Upsert(includedApp1, includedApp2, otherTypeApp, incompatibleDeviceApp, incompatiblePermission1, incompatiblePermission2, paidApp);
 
-		var query = new AppQuery(myDevice, AppTypes.WatchFace, false, [new AppPermission(AppPermissions.Sensor), new AppPermission(AppPermissions.BluetoothLowEnergy)]);
+		var query = new AppQuery(myDevice, AppTypes.WatchFace, false, [new AppPermission(AppPermissions.Sensor), new AppPermission(AppPermissions.BluetoothLowEnergy)], 0, int.MaxValue);
 
 		// Act
 		var result = (await _mediator.Send(query)).ToList();
@@ -94,7 +90,7 @@ public class AppQueryTests : BaseTests
 		Assert.Contains(result, app => app.Id == includedApp2.Id);
 		Assert.DoesNotContain(result, app => app.Id == otherTypeApp.Id);
 		Assert.DoesNotContain(result, app => app.Id == incompatibleDeviceApp.Id);
-		Assert.DoesNotContain(result, app => app.Id == incompatiblePermission.Id);
+		Assert.DoesNotContain(result, app => app.Id == incompatiblePermission1.Id);
 		Assert.DoesNotContain(result, app => app.Id == incompatiblePermission2.Id);
 		Assert.DoesNotContain(result, app => app.Id == paidApp.Id);
 	}

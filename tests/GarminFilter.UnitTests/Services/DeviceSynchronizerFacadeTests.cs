@@ -5,7 +5,7 @@ using GarminFilter.Domain.Device.ValueObjects;
 using GarminFilter.Domain.Services;
 using GarminFilter.Infrastructure.Garmin.Services;
 
-namespace GarminFilter.UnitTests.Garmin.Services;
+namespace GarminFilter.UnitTests.Services;
 
 public class DeviceSynchronizerFacadeTests
 {

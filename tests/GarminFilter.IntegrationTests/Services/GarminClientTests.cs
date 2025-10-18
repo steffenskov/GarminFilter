@@ -1,7 +1,7 @@
 using GarminFilter.Domain.App.ValueObjects;
 using GarminFilter.Domain.Services;
 
-namespace GarminFilter.IntegrationTests.Garmin.Services;
+namespace GarminFilter.IntegrationTests.Services;
 
 public class GarminClientTests : BaseTests
 {

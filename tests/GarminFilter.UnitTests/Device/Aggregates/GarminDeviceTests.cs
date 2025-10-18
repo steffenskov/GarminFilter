@@ -1,7 +1,7 @@
 using GarminFilter.Domain.Device.Aggregates;
 using GarminFilter.Domain.Device.ValueObjects;
 
-namespace GarminFilter.UnitTests.Garmin.Aggregates;
+namespace GarminFilter.UnitTests.Device.Aggregates;
 
 public class GarminDeviceTests
 {

@@ -1,7 +1,7 @@
 using GarminFilter.Domain.App.Aggregates;
 using GarminFilter.Domain.App.ValueObjects;
 
-namespace GarminFilter.UnitTests.Garmin.Aggregates;
+namespace GarminFilter.UnitTests.App.Aggregates;
 
 public class GarminAppTests
 {
@@ -28,5 +28,92 @@ public class GarminAppTests
 		Assert.Contains(app.Permissions, permission => permission.PrimitiveEnumValue == AppPermissions.UserProfile);
 		Assert.Contains(app.Permissions, permission => permission.PrimitiveEnumValue == AppPermissions.ComplicationSubscriber);
 		Assert.Contains(app.CompatibleDeviceTypeIds, deviceId => deviceId.PrimitiveValue == 291);
+	}
+
+	[Fact]
+	public void IsPaid_HasPricing_ReturnsTrue()
+	{
+		// Arrange
+		var app = new GarminApp
+		{
+			TypeId = AppTypes.WatchFace,
+			Id = AppId.New(),
+			Pricing = new AppPricing
+			{
+				PartNumber = ""
+			}
+		};
+
+		// Act
+		var isPaid = ((IGarminApp)app).IsPaid;
+
+		// Assert
+		Assert.True(isPaid);
+	}
+
+	[Fact]
+	public void IsPaid_HasNoPricing_ReturnsFalse()
+	{
+		// Arrange
+		var app = new GarminApp
+		{
+			TypeId = AppTypes.WatchFace,
+			Id = AppId.New()
+		};
+
+		// Act
+		var isPaid = ((IGarminApp)app).IsPaid;
+
+		// Assert
+		Assert.False(isPaid);
+	}
+
+	[Fact]
+	public void Name_HasLocalizations_ReturnsFirstAsName()
+	{
+		// Arrange
+		var app = new GarminApp
+		{
+			TypeId = AppTypes.WatchFace,
+			Id = AppId.New(),
+			AppLocalizations =
+			[
+				new AppLocalization
+				{
+					Locale = "en",
+					Name = "First name",
+					Description = "Description"
+				},
+				new AppLocalization
+				{
+					Locale = "da",
+					Name = "Andet navn",
+					Description = "Beskrivelse"
+				}
+			]
+		};
+
+		// Act
+		var name = ((IGarminApp)app).Name;
+
+		// Assert
+		Assert.Equal("First name", name);
+	}
+
+	[Fact]
+	public void Name_HasNoLocalizations_ReturnsUnknown()
+	{
+		// Arrange
+		var app = new GarminApp
+		{
+			TypeId = AppTypes.WatchFace,
+			Id = AppId.New()
+		};
+
+		// Act
+		var name = ((IGarminApp)app).Name;
+
+		// Assert
+		Assert.Equal("Unknown", name);
 	}
 }

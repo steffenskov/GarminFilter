@@ -6,7 +6,7 @@ using GarminFilter.Domain.Services;
 using GarminFilter.Infrastructure.Garmin.Policies;
 using GarminFilter.Infrastructure.Garmin.Services;
 
-namespace GarminFilter.UnitTests.Garmin.Services;
+namespace GarminFilter.UnitTests.Services;
 
 public class BaseAppSynchronizerFacadeTests
 {
