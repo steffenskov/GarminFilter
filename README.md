@@ -17,3 +17,11 @@ You can then access the API's swagger interface on [localhost:8080](http://local
 You can run the frontend locally by executing `flutter run -d chrome` within the `/flutter-frontend` folder.
 
 As you can probably tell from the name, this requires flutter to be installed on your PC.
+
+
+
+## Hosting
+
+The `hosting` folder (currently work-in-progress) will contain the necessary `docker-compose.yml` to compose up both backend and frontend from ghcr hosted images.
+
+The backend will listen on port 8080, so if you want to expose it publicly you might want to put e.g. an nginx reverse proxy in front of it (advisably anyway really IMO)
