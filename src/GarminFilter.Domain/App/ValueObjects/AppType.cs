@@ -30,10 +30,17 @@ public class AppType : StrongTypedEnumValue<AppType, AppTypes>
 	{
 		return new AppType(value);
 	}
+
+	public static implicit operator AppTypes(AppType value)
+	{
+		return value.PrimitiveEnumValue;
+	}
 }
 
 public enum AppTypes
 {
 	WatchFace = 1,
-	DataField = 2
+	DataField = 2,
+	Music = 3,
+	DeviceApp = 4
 }

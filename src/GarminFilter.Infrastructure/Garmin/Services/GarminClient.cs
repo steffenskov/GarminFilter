@@ -30,7 +30,8 @@ internal class GarminClient : IGarminClient
 
 	public async Task<IList<GarminApp>> GetAppsAsync(int pageIndex, AppType type, CancellationToken cancellationToken = default)
 	{
-		var url = $"apps?startPageIndex={pageIndex}&pageSize={Consts.App.PageSize}&sortType=mostRecent&appType={type.ToString().ToLower()}";
+		var appType = FormatAppType(type);
+		var url = $"apps?startPageIndex={pageIndex}&pageSize={Consts.App.PageSize}&sortType=mostRecent&appType={appType}";
 		using var client = _httpClientFactory.CreateClient(nameof(GarminClient));
 		var response = await client.GetAsync(url, cancellationToken);
 		response.EnsureSuccessStatusCode();
@@ -38,5 +39,17 @@ internal class GarminClient : IGarminClient
 		var json = await response.Content.ReadAsStringAsync(cancellationToken);
 
 		return JsonSerializer.Deserialize<GarminApp[]>(json, _jsonSerializerOptions) ?? throw new JsonException("Failed to deserialize apps");
+	}
+
+	private string FormatAppType(AppTypes type)
+	{
+		return type switch
+		{
+			AppTypes.DataField => "datafield",
+			AppTypes.DeviceApp => "watch-app",
+			AppTypes.Music => "audio-content-provider-app",
+			AppTypes.WatchFace => "watchface",
+			_ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+		};
 	}
 }

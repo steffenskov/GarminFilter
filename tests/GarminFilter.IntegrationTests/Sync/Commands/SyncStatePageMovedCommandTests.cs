@@ -20,7 +20,7 @@ public class SyncStatePageMovedCommandTests : BaseTests
 	public async Task SyncStatePageMovedCommand_DoesNotExist_IsCreated()
 	{
 		// Arrange
-		var command = new SyncStatePageMovedCommand(AppTypes.DataField, 20);
+		var command = new SyncStatePageMovedCommand(AppTypes.Music, 20);
 
 		// Act
 		var result = await _mediator.Send(command);
@@ -38,9 +38,9 @@ public class SyncStatePageMovedCommandTests : BaseTests
 		// Arrange
 		_repository.Upsert(new SyncState
 		{
-			Id = AppTypes.WatchFace
+			Id = AppTypes.DeviceApp
 		});
-		var command = new SyncStatePageMovedCommand(AppTypes.WatchFace, 20);
+		var command = new SyncStatePageMovedCommand(AppTypes.DeviceApp, 20);
 
 		// Act
 		var result = await _mediator.Send(command);
