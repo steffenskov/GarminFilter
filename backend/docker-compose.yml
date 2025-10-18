@@ -10,6 +10,7 @@ services:
       - garminfilter-data:/app/data
     environment:
       - DatabasePath=data
+      - Origin=http://localhost:3000
     restart: unless-stopped
 
 volumes:

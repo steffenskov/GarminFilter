@@ -7,7 +7,7 @@ import '../models/sync_status_view_model.dart';
 import '../models/permission.dart';
 
 class GarminApiService {
-  static const String baseUrl = 'http://localhost:5176';
+  static const String baseUrl = 'http://localhost:8080';
   
   // Helper method to convert relative URLs to absolute URLs
   static String getAbsoluteImageUrl(String relativeUrl) {

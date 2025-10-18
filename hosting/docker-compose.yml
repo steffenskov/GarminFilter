@@ -5,7 +5,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - garminfilter-data:/app/data
+      - ./_garminfilter-data:/app/data
     environment:
       - DatabasePath=data
     restart: unless-stopped
