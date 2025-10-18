@@ -10,13 +10,20 @@ public class AppViewModel
 		Id = app.Id;
 		Name = app.Name;
 		Type = app.TypeId;
-		ImageUrl = $"https://services.garmin.com/appsLibraryExternalServices/api/icons/{app.IconFileId}";
+		ImageUrl = $"/app/{app.IconFileId}";
 		Url = $"https://apps.garmin.com/apps/{app.Id}";
 		IsPaid = app.IsPaid;
-		Permissions = app.Permissions;
+		Permissions = app.Permissions
+			.Select(permission => new AppPermissionViewModel(permission))
+			.OrderBy(permission => permission.Description)
+			.ToList();
+		Developer = app.DeveloperName;
 	}
 
-	public HashSet<AppPermission> Permissions { get; }
+	public string Developer { get; }
+
+
+	public List<AppPermissionViewModel> Permissions { get; }
 
 	public bool IsPaid { get; }
 

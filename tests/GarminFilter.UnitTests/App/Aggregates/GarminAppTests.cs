@@ -78,18 +78,8 @@ public class GarminAppTests
 			Id = AppId.New(),
 			AppLocalizations =
 			[
-				new AppLocalization
-				{
-					Locale = "en",
-					Name = "First name",
-					Description = "Description"
-				},
-				new AppLocalization
-				{
-					Locale = "da",
-					Name = "Andet navn",
-					Description = "Beskrivelse"
-				}
+				new AppLocalization("en", "First name", "Description"),
+				new AppLocalization("da", "Andet navn", "Beskrivelse")
 			]
 		};
 

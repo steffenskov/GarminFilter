@@ -8,4 +8,5 @@ public interface IGarminClient
 {
 	Task<IList<GarminDevice>> GetDevicesAsync(CancellationToken cancellationToken = default);
 	Task<IList<GarminApp>> GetAppsAsync(int pageIndex, AppType type, CancellationToken cancellationToken = default);
+	Task<Stream> GetFileAsync(string fileId, CancellationToken cancellationToken = default);
 }

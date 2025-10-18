@@ -30,9 +30,8 @@ public static class Setup
 		services.AddHttpClient<GarminClient>(client =>
 		{
 			client.BaseAddress = new Uri("https://apps.garmin.com/api/appsLibraryExternalServices/api/asw/");
-			client.DefaultRequestHeaders.Add("User-Agent", "GarminFilterBot");
 			client.DefaultRequestHeaders.Add("Accept", "application/json");
-			//config.DefaultRequestHeaders.UserAgent.ParseAdd("GarminFilterBot/1.0 (+https://github.com/steffenskov/GarminFilter)"); // TODO: Add this once the GitHub repo is up
+			client.DefaultRequestHeaders.UserAgent.ParseAdd("GarminFilterBot/1.0 (+https://github.com/steffenskov/GarminFilter)");
 		}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
 		{
 			AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,

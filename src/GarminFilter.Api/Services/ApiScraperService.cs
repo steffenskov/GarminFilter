@@ -17,5 +17,7 @@ public class ApiScraperService : BackgroundService
 		{
 			await synchronizer.SynchronizeAsync(stoppingToken);
 		}
+
+		await Task.Delay(TimeSpan.FromHours(6), stoppingToken); // Wait between attempting syncs once caught up
 	}
 }

@@ -1,3 +1,4 @@
+using GarminFilter.Api.Models;
 using GarminFilter.Domain.App.ValueObjects;
 
 namespace GarminFilter.Api.Endpoints;
@@ -13,8 +14,8 @@ public class PermissionEndpoint : IEndpoint
 			var values = Enum.GetValues<AppPermissions>();
 
 			return values
-				.Select(value => value.ToString())
-				.OrderBy(value => value);
+				.Select(value => new AppPermissionViewModel(value))
+				.OrderBy(permission => permission.Description);
 		});
 	}
 }

@@ -14,14 +14,17 @@ public class DeviceEndpoint : IEndpoint
 			.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken) =>
 			{
 				var devices = await mediator.Send(new DeviceGetAllQuery(), cancellationToken);
-				return devices;
+				return devices
+					.Select(device => new DeviceViewModel(device))
+					.OrderBy(device => device.Name);
 			});
 
 		builder.MapPost("/{deviceId}/watchface", async (DeviceId deviceId, AppQueryModel model, IMediator mediator, CancellationToken cancellationToken) =>
 		{
 			var watchfaces = await mediator.Send(new AppQuery(deviceId, AppTypes.WatchFace, model.IncludePaid, model.ExcludePermissions, model.PageIndex, model.PageSize), cancellationToken);
 
-			return watchfaces.Select(garminApp => new AppViewModel(garminApp));
+			return watchfaces
+				.Select(garminApp => new AppViewModel(garminApp));
 		});
 	}
 

@@ -31,8 +31,20 @@ builder.Services.AddDomain("garmin.db", new DelayPolicy(TimeSpan.FromSeconds(5))
 
 builder.Services.AddHostedService<ApiScraperService>();
 
+builder.Services.AddCors(config =>
+{
+	config.AddDefaultPolicy(policy =>
+	{
+		policy.AllowAnyHeader();
+		policy.AllowAnyMethod();
+		policy.AllowAnyOrigin();
+	});
+});
+
 
 var app = builder.Build();
+
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

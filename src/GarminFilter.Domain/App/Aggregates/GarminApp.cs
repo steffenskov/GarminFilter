@@ -11,13 +11,16 @@ public interface IGarminApp : IAggregate<AppId>
 	HashSet<DeviceId> CompatibleDeviceTypeIds { get; }
 	Guid IconFileId { get; }
 	HashSet<AppPermission> Permissions { get; }
+	AppDeveloper? Developer { get; }
 
 	bool IsPaid => Pricing is not null;
 	string Name => AppLocalizations.FirstOrDefault()?.Name ?? "Unknown";
+	string DeveloperName => Developer?.DeveloperDisplayName ?? "Unknown";
 }
 
 public record GarminApp : IGarminApp
 {
+	public AppDeveloper? Developer { get; init; }
 	public HashSet<AppPermission> Permissions { get; init; } = [];
 
 	public Guid IconFileId { get; init; }
