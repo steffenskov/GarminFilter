@@ -19,7 +19,7 @@ internal class GarminAppRepository : BaseAggregateRepository<GarminApp, AppId>, 
 		return _collection.Exists(aggregate => aggregate.Id == id);
 	}
 
-	public IEnumerable<GarminApp> Query(DeviceId deviceId, AppType type, bool includePaid, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize)
+	public IEnumerable<GarminApp> Query(DeviceId deviceId, AppType type, bool includePaid, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize, AppOrder orderBy)
 	{
 		// Build the tags exclusion part
 		var expressionBuilder = new StringBuilder();
@@ -37,9 +37,17 @@ internal class GarminAppRepository : BaseAggregateRepository<GarminApp, AppId>, 
 			expressionBuilder.AppendLine($"AND $.{nameof(GarminApp.Pricing)} = NULL");
 		}
 
+		var orderProperty = GetOrderBy(orderBy);
+
 		var skip = pageIndex * pageSize;
 
-		return _collection.Find(expressionBuilder.ToString(), skip, pageSize);
+		return _collection
+			.Query()
+			.Where(expressionBuilder.ToString())
+			.OrderByDescending($"$.{orderProperty}")
+			.Skip(skip)
+			.Limit(pageSize)
+			.ToEnumerable();
 	}
 
 	public int GetCount(AppType type)
@@ -50,5 +58,16 @@ internal class GarminAppRepository : BaseAggregateRepository<GarminApp, AppId>, 
 	public override GarminApp? GetSingle(AppId id)
 	{
 		return _collection.FindById(id.PrimitiveValue);
+	}
+
+	private static string GetOrderBy(AppOrder orderBy)
+	{
+		return orderBy.PrimitiveEnumValue switch
+		{
+			AppOrders.ReviewCount => nameof(GarminApp.ReviewCount),
+			AppOrders.Rating => nameof(GarminApp.AverageRating),
+			AppOrders.Newest => nameof(GarminApp.ReleaseDate),
+			_ => throw new ArgumentOutOfRangeException(nameof(orderBy), orderBy, null)
+		};
 	}
 }

@@ -5,6 +5,7 @@ import 'models/app_view_model.dart';
 import 'models/app_query_model.dart';
 import 'models/permission.dart';
 import 'services/garmin_api_service.dart';
+import 'services/preferences_service.dart';
 
 void main() {
   runApp(const GarminFilterApp());
@@ -56,6 +57,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
     super.initState();
     _loadDevices();
     _loadPermissions();
+    _loadPreferences();
     _scrollController.addListener(_onScroll);
   }
 
@@ -84,6 +86,16 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
         _devices = devices;
         _isLoading = false;
       });
+      
+      // Load selected device after devices are loaded
+      final selectedDevice = await PreferencesService.loadSelectedDevice(devices);
+      if (selectedDevice != null) {
+        setState(() {
+          _selectedDevice = selectedDevice;
+        });
+        // Trigger search with saved preferences
+        _searchWatchfaces(selectedDevice, resetPagination: true);
+      }
     } catch (e) {
       setState(() {
         _error = e.toString();
@@ -110,6 +122,20 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
         _isLoadingPermissions = false;
       });
     }
+  }
+
+  Future<void> _loadPreferences() async {
+    // Load include paid preference
+    final includePaid = await PreferencesService.loadIncludePaid();
+    setState(() {
+      _includePaid = includePaid;
+    });
+
+    // Load excluded permissions
+    final excludedPermissions = await PreferencesService.loadExcludedPermissions();
+    setState(() {
+      _selectedExcludePermissions = excludedPermissions;
+    });
   }
 
   Future<void> _searchWatchfaces(GarminDevice device, {bool resetPagination = true}) async {
@@ -224,10 +250,11 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                               device.name.toLowerCase().contains(textEditingValue.text.toLowerCase()));
                         },
                         displayStringForOption: (GarminDevice device) => device.name,
-                        onSelected: (GarminDevice device) {
+                        onSelected: (GarminDevice device) async {
                           setState(() {
                             _selectedDevice = device;
                           });
+                          await PreferencesService.saveSelectedDevice(device);
                           _searchWatchfaces(device, resetPagination: true);
                         },
                         fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
@@ -241,11 +268,12 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                               suffixIcon: _selectedDevice != null
                                   ? IconButton(
                                       icon: const Icon(Icons.clear),
-                                      onPressed: () {
+                                      onPressed: () async {
                                         textEditingController.clear();
                                         setState(() {
                                           _selectedDevice = null;
                                         });
+                                        await PreferencesService.saveSelectedDevice(null);
                                       },
                                     )
                                   : null,
@@ -299,10 +327,11 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                   children: [
                     Checkbox(
                       value: _includePaid,
-                      onChanged: (bool? value) {
+                      onChanged: (bool? value) async {
                         setState(() {
                           _includePaid = value ?? true;
                         });
+                        await PreferencesService.saveIncludePaid(_includePaid);
                         // Reset search when checkbox changes
                         if (_selectedDevice != null) {
                           _searchWatchfaces(_selectedDevice!, resetPagination: true);
@@ -312,10 +341,11 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           setState(() {
                             _includePaid = !_includePaid;
                           });
+                          await PreferencesService.saveIncludePaid(_includePaid);
                           // Reset search when checkbox changes
                           if (_selectedDevice != null) {
                             _searchWatchfaces(_selectedDevice!, resetPagination: true);
@@ -380,7 +410,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                               children: [
                                 Checkbox(
                                   value: isSelected,
-                                  onChanged: (bool? value) {
+                                  onChanged: (bool? value) async {
                                     setState(() {
                                       if (value == true) {
                                         _selectedExcludePermissions.add(permission.permission);
@@ -388,6 +418,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                                         _selectedExcludePermissions.remove(permission.permission);
                                       }
                                     });
+                                    await PreferencesService.saveExcludedPermissions(_selectedExcludePermissions);
                                     // Reset search when permissions change
                                     if (_selectedDevice != null) {
                                       _searchWatchfaces(_selectedDevice!, resetPagination: true);
@@ -397,7 +428,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () {
+                                    onTap: () async {
                                       setState(() {
                                         if (isSelected) {
                                           _selectedExcludePermissions.remove(permission.permission);
@@ -405,6 +436,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                                           _selectedExcludePermissions.add(permission.permission);
                                         }
                                       });
+                                      await PreferencesService.saveExcludedPermissions(_selectedExcludePermissions);
                                       // Reset search when permissions change
                                       if (_selectedDevice != null) {
                                         _searchWatchfaces(_selectedDevice!, resetPagination: true);

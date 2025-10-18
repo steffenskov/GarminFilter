@@ -8,7 +8,6 @@ public interface IGarminApp : IAggregate<AppId>
 	AppPricing? Pricing { get; }
 	List<AppLocalization> AppLocalizations { get; }
 	AppType TypeId { get; }
-	HashSet<DeviceId> CompatibleDeviceTypeIds { get; }
 	Guid IconFileId { get; }
 	HashSet<AppPermission> Permissions { get; }
 	AppDeveloper? Developer { get; }
@@ -22,11 +21,12 @@ public interface IGarminApp : IAggregate<AppId>
 
 public record GarminApp : IGarminApp
 {
+	public HashSet<DeviceId> CompatibleDeviceTypeIds { get; init; } = [];
+	public ulong ReleaseDate { get; init; }
 	public AppDeveloper? Developer { get; init; }
 	public HashSet<AppPermission> Permissions { get; init; } = [];
 
 	public Guid IconFileId { get; init; }
-	public HashSet<DeviceId> CompatibleDeviceTypeIds { get; init; } = [];
 	public required AppType TypeId { get; init; }
 	public List<AppLocalization> AppLocalizations { get; init; } = []; // TODO: Can we use a different type than List? LiteDB does not support ImmutableList etc.
 

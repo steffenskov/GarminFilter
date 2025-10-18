@@ -78,7 +78,8 @@ public class AppQueryTests : BaseTests
 
 		_repository.Upsert(includedApp1, includedApp2, otherTypeApp, incompatibleDeviceApp, incompatiblePermission1, incompatiblePermission2, paidApp);
 
-		var query = new AppQuery(myDevice, AppTypes.WatchFace, false, [new AppPermission(AppPermissions.Sensor), new AppPermission(AppPermissions.BluetoothLowEnergy)], 0, int.MaxValue);
+		var query = new AppQuery(myDevice, AppTypes.WatchFace, false, [new AppPermission(AppPermissions.Sensor), new AppPermission(AppPermissions.BluetoothLowEnergy)], 0, int.MaxValue,
+			AppOrders.Newest);
 
 		// Act
 		var result = (await _mediator.Send(query)).ToList();
@@ -94,4 +95,6 @@ public class AppQueryTests : BaseTests
 		Assert.DoesNotContain(result, app => app.Id == incompatiblePermission2.Id);
 		Assert.DoesNotContain(result, app => app.Id == paidApp.Id);
 	}
+
+	// TODO: Write unit tests for ordering
 }
