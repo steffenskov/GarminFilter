@@ -4,6 +4,8 @@ namespace GarminFilter.Api.Models;
 
 public class AppQueryModel
 {
-	public HashSet<AppPermission> ExcludePermissions { get; set; } = [];
+	public required HashSet<AppPermission> ExcludePermissions { get; set; }
 	public bool IncludePaid { get; set; }
+	public int PageIndex { get; set; }
+	public int PageSize { get; set; }
 }

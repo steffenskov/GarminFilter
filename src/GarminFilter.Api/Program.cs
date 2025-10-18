@@ -1,6 +1,7 @@
 using Ckode;
 using GarminFilter.Api.Endpoints;
 using GarminFilter.Api.Services;
+using GarminFilter.Domain.App.ValueObjects;
 using GarminFilter.Infrastructure;
 using GarminFilter.Infrastructure.Garmin.Policies;
 
@@ -8,7 +9,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+	options.AddSchemaTransformer((schema, context, cancellationToken) =>
+	{
+		if (context.JsonTypeInfo.Type == typeof(HashSet<AppPermission>))
+		{
+			schema.Format = "string[]";
+		}
+
+		return Task.CompletedTask;
+	});
+});
 
 builder.Services.AddLogging(config =>
 {

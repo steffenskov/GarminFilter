@@ -19,7 +19,7 @@ public class DeviceEndpoint : IEndpoint
 
 		builder.MapPost("/{deviceId}/watchface", async (DeviceId deviceId, AppQueryModel model, IMediator mediator, CancellationToken cancellationToken) =>
 		{
-			var watchfaces = await mediator.Send(new AppQuery(deviceId, AppTypes.WatchFace, model.IncludePaid, model.ExcludePermissions), cancellationToken);
+			var watchfaces = await mediator.Send(new AppQuery(deviceId, AppTypes.WatchFace, model.IncludePaid, model.ExcludePermissions, model.PageIndex, model.PageSize), cancellationToken);
 
 			return watchfaces.Select(garminApp => new AppViewModel(garminApp));
 		});

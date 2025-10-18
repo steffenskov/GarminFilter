@@ -19,7 +19,7 @@ internal class GarminAppRepository : BaseAggregateRepository<GarminApp, AppId>, 
 		return _collection.Exists(aggregate => aggregate.Id == id);
 	}
 
-	public IEnumerable<GarminApp> Query(DeviceId deviceId, AppType type, bool includePaid, ISet<AppPermission> excludePermissions)
+	public IEnumerable<GarminApp> Query(DeviceId deviceId, AppType type, bool includePaid, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize)
 	{
 		// Build the tags exclusion part
 		var expressionBuilder = new StringBuilder();
@@ -37,12 +37,9 @@ internal class GarminAppRepository : BaseAggregateRepository<GarminApp, AppId>, 
 			expressionBuilder.AppendLine($"AND $.{nameof(GarminApp.Pricing)} = NULL");
 		}
 
-		return _collection.Find(expressionBuilder.ToString());
-	}
+		var skip = pageIndex * pageSize;
 
-	public IEnumerable<GarminApp> GetByType(AppType type)
-	{
-		return _collection.Find(aggregate => aggregate.TypeId == type.PrimitiveValue);
+		return _collection.Find(expressionBuilder.ToString(), skip, pageSize);
 	}
 
 	public int GetCount(AppType type)
