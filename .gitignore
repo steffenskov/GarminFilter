@@ -52,3 +52,11 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+.idea
+*.DotSettings.user
+coverage-report
+TestResults
+
+garmin.db
+garmin-log.db
