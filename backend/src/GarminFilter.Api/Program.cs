@@ -27,7 +27,8 @@ builder.Services.AddLogging(config =>
 	config.ClearProviders();
 	config.AddConsole();
 });
-builder.Services.AddDomain("garmin.db", new DelayPolicy(TimeSpan.FromSeconds(5)));
+var dbPath = builder.Configuration["DatabasePath"] ?? throw new InvalidOperationException("Missing configuration: DatabasePath");
+builder.Services.AddDomain($"{dbPath.Trim('/')}/garmin.db", new DelayPolicy(TimeSpan.FromSeconds(5)));
 
 builder.Services.AddHostedService<ApiScraperService>();
 
@@ -45,16 +46,11 @@ builder.Services.AddCors(config =>
 var app = builder.Build();
 
 app.UseCors();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.MapOpenApi();
+app.UseSwaggerUi(options =>
 {
-	app.MapOpenApi();
-	app.UseSwaggerUi(options =>
-	{
-		options.DocumentPath = "openapi/v1.json";
-	});
-}
+	options.DocumentPath = "openapi/v1.json";
+});
 
 app.UseHttpsRedirection();
 
