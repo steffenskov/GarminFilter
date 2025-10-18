@@ -28,6 +28,7 @@ builder.Services.AddLogging(config =>
 	config.AddConsole();
 });
 var dbPath = builder.Configuration["DatabasePath"] ?? throw new InvalidOperationException("Missing configuration: DatabasePath");
+var origin = builder.Configuration["Origin"] ?? throw new InvalidOperationException("Missing configuration: Origin");
 builder.Services.AddDomain($"{dbPath.Trim('/')}/garmin.db", new DelayPolicy(TimeSpan.FromSeconds(5)));
 
 builder.Services.AddHostedService<ApiScraperService>();
@@ -36,9 +37,9 @@ builder.Services.AddCors(config =>
 {
 	config.AddDefaultPolicy(policy =>
 	{
+		policy.WithMethods("GET", "POST", "OPTIONS");
 		policy.AllowAnyHeader();
-		policy.AllowAnyMethod();
-		policy.AllowAnyOrigin();
+		policy.WithOrigins(origin);
 	});
 });
 

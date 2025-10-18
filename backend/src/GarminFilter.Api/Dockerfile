@@ -21,7 +21,8 @@ EXPOSE 8080
 # Copy published app
 COPY --from=publish /app/publish .
 
-# Set default environment variable for database path
+# Set default environment variables
 ENV DatabasePath=data
+ENV Origin=http://localhost:3000
 
 ENTRYPOINT ["dotnet", "GarminFilter.Api.dll"]
