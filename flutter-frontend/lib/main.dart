@@ -532,6 +532,30 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                                                                   color: Colors.grey,
                                                                 ),
                                                               ),
+                                                              const SizedBox(height: 2),
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                    '${watchface.averageRating.toStringAsFixed(1)} ',
+                                                                    style: const TextStyle(
+                                                                      fontSize: 12,
+                                                                      color: Colors.grey,
+                                                                    ),
+                                                                  ),
+                                                                  const Icon(
+                                                                    Icons.star,
+                                                                    size: 12,
+                                                                    color: Colors.amber,
+                                                                  ),
+                                                                  Text(
+                                                                    ' (${watchface.reviewCount})',
+                                                                    style: const TextStyle(
+                                                                      fontSize: 12,
+                                                                      color: Colors.grey,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ],
                                                           ),
                                                         ),

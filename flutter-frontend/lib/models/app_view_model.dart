@@ -9,6 +9,8 @@ class AppViewModel {
   final String id;
   final String name;
   final String developer;
+  final double averageRating;
+  final int reviewCount;
 
   AppViewModel({
     required this.permissions,
@@ -19,6 +21,8 @@ class AppViewModel {
     required this.id,
     required this.name,
     required this.developer,
+    required this.averageRating,
+    required this.reviewCount,
   });
 
   factory AppViewModel.fromJson(Map<String, dynamic> json) {
@@ -33,6 +37,8 @@ class AppViewModel {
       id: json['id'] as String,
       name: json['name'] as String,
       developer: json['developer'] as String,
+      averageRating: (json['averageRating'] as num?)?.toDouble() ?? 0.0,
+      reviewCount: json['reviewCount'] as int? ?? 0,
     );
   }
 
@@ -46,6 +52,8 @@ class AppViewModel {
       'id': id,
       'name': name,
       'developer': developer,
+      'averageRating': averageRating,
+      'reviewCount': reviewCount,
     };
   }
 }

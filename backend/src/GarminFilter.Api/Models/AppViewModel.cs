@@ -18,7 +18,13 @@ public class AppViewModel
 			.OrderBy(permission => permission.Description)
 			.ToList();
 		Developer = app.DeveloperName;
+		AverageRating = app.AverageRating;
+		ReviewCount = app.ReviewCount;
 	}
+
+	public uint ReviewCount { get; }
+
+	public decimal AverageRating { get; }
 
 	public string Developer { get; }
 

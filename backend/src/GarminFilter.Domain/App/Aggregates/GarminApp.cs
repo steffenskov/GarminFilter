@@ -12,6 +12,8 @@ public interface IGarminApp : IAggregate<AppId>
 	Guid IconFileId { get; }
 	HashSet<AppPermission> Permissions { get; }
 	AppDeveloper? Developer { get; }
+	decimal AverageRating { get; }
+	uint ReviewCount { get; }
 
 	bool IsPaid => Pricing is not null;
 	string Name => AppLocalizations.FirstOrDefault()?.Name ?? "Unknown";
@@ -31,4 +33,6 @@ public record GarminApp : IGarminApp
 	public required AppId Id { get; init; }
 
 	public AppPricing? Pricing { get; init; }
+	public decimal AverageRating { get; init; }
+	public uint ReviewCount { get; init; }
 }
