@@ -14,9 +14,11 @@ You can then access the API's swagger interface on [localhost:8080](http://local
 
 ### Frontend
 
-You can run the frontend locally by executing `flutter run -d chrome` within the `/flutter-frontend` folder.
+You can run the frontend locally by executing `flutter run -d chrome` within the `/frontend` folder.
 
 As you can probably tell from the name, this requires flutter to be installed on your PC.
+
+Also FYI the frontend is purely vibe-coded using Cursor (the backend is hand-built though)
 
 
 

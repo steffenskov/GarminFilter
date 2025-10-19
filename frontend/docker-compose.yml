@@ -1,0 +1,5 @@
+services:
+  garminfilter-frontend:
+    image: garminfilter-frontend
+    ports:
+      - "80:80"

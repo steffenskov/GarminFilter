@@ -1,13 +1,20 @@
 services:
-  garminfilter:
-    image: ghcr.io/steffenskov/garminfilter:latest
-    container_name: garminfilter
+  garminfilter-api:
+    image: ghcr.io/steffenskov/garminfilter-api:latest
+    container_name: garminfilter-api
     ports:
-      - "8080:8080"
+      - "2001:8080"
     volumes:
       - ./_garminfilter-data:/app/data
     environment:
       - DatabasePath=data
+    restart: unless-stopped
+
+  garminfilter-web:
+    image: ghcr.io/steffenskov/garminfilter-web:latest
+    container_name: garminfilter-web
+    ports:
+      - "2000:80"
     restart: unless-stopped
 
 volumes:
