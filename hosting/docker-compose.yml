@@ -8,6 +8,7 @@ services:
       - ./_garminfilter-data:/app/data
     environment:
       - DatabasePath=data
+      - Origin=http://garminfilter.ckode.dk
     restart: unless-stopped
 
   garminfilter-web:

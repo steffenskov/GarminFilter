@@ -2,7 +2,9 @@ services:
   garminfilter-frontend:
     build:
       context: .
-      dockerfile : ./Dockerfile
+      dockerfile: ./Dockerfile
+      args:
+        - BACKEND_URL=http://localhost:8080
     container_name: garminfilter-web
     ports:
       - "80:80"
