@@ -1,9 +1,9 @@
 services:
-  garminfilter:
+  garminfilter-api:
     build:
       context: .
       dockerfile: ./src/GarminFilter.Api/Dockerfile
-    container_name: garminfilter
+    container_name: garminfilter-api
     ports:
       - "8080:8080"
     volumes:
@@ -11,7 +11,6 @@ services:
     environment:
       - DatabasePath=data
       - Origin=http://localhost:3000
-    restart: unless-stopped
 
 volumes:
   garminfilter-data:
