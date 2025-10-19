@@ -63,4 +63,4 @@ jobs:
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
           build-args: |
-            BACKEND_URL=http://garminfilter-api.ckode.dk
+            BACKEND_URL=https://garminfilter-api.ckode.dk
