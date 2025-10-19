@@ -1,5 +1,8 @@
 services:
   garminfilter-frontend:
-    image: garminfilter-frontend
+    build:
+      context: .
+      dockerfile : ./Dockerfile
+    container_name: garminfilter-web
     ports:
       - "80:80"
