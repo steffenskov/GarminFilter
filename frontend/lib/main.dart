@@ -258,6 +258,9 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                           _searchWatchfaces(device, resetPagination: true);
                         },
                         fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                          if (_selectedDevice != null) {
+                            textEditingController.text = _selectedDevice!.name;
+                          }
                           return TextFormField(
                             controller: textEditingController,
                             focusNode: focusNode,
