@@ -466,7 +466,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                         textAlign: TextAlign.center,
                       ),
                     )
-                  : _isLoadingWatchfaces
+                  : _isLoadingWatchfaces && _watchfaces.isEmpty  // Only show spinner if initial load
                       ? const Center(child: CircularProgressIndicator())
                       : _watchfaceError != null
                           ? Center(
