@@ -10,7 +10,7 @@ public record DeviceViewModel
 	private DeviceViewModel(GarminDevice device)
 	{
 		Id = device.Id;
-		Name = StripCharacters(device.Name.Capitalize());
+		Name = StripCharacters(device.Name).Capitalize();
 		_urlName = device.UrlName;
 	}
 
