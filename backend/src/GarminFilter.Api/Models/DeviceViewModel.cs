@@ -39,6 +39,11 @@ public record DeviceViewModel
 
 	public DeviceViewModel IncludeDistinctName()
 	{
+		if (string.IsNullOrWhiteSpace(_urlName))
+		{
+			return this;
+		}
+
 		return this with
 		{
 			Name = $"{Name} ({_urlName})"
