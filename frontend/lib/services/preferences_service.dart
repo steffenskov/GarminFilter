@@ -28,7 +28,7 @@ class PreferencesService {
     if (deviceId != null && deviceName != null) {
       // Try to find the device in the current list
       try {
-        return devices.firstWhere((device) => device.id == deviceId);
+        return devices.firstWhere((device) => device.id == deviceId && device.name == deviceName);
       } catch (e) {
         // Device not found in current list, return null
         return null;

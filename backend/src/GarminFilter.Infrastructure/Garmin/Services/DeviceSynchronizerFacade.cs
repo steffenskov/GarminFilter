@@ -27,6 +27,6 @@ internal class DeviceSynchronizerFacade : ISynchronizerFacade
 		_logger?.LogInformation("Upserting {deviceCount} devices", devices.Count);
 
 
-		await _mediator.Send(new DeviceUpsertCommand(devices.Select(device => device.StripCharacters())), cancellationToken);
+		await _mediator.Send(new DeviceUpsertCommand(devices), cancellationToken);
 	}
 }

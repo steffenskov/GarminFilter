@@ -14,8 +14,11 @@ public class DeviceEndpoint : IEndpoint
 			.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken) =>
 			{
 				var devices = await mediator.Send(new DeviceGetAllQuery(), cancellationToken);
-				return devices
-					.Select(device => new DeviceViewModel(device))
+				var result = devices
+					.SelectMany(DeviceViewModel.Create)
+					.ToList();
+
+				return DistinguishDuplicateNames(result)
 					.OrderBy(device => device.Name);
 			});
 
@@ -30,4 +33,19 @@ public class DeviceEndpoint : IEndpoint
 	}
 
 	public string GroupName => "device";
+
+	private static IEnumerable<DeviceViewModel> DistinguishDuplicateNames(List<DeviceViewModel> models)
+	{
+		foreach (var model in models)
+		{
+			if (models.Count(m => m.Name == model.Name) > 1)
+			{
+				yield return model.IncludeDistinctName();
+			}
+			else
+			{
+				yield return model;
+			}
+		}
+	}
 }
