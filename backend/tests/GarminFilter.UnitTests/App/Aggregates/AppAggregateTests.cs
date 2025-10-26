@@ -116,6 +116,6 @@ public class AppAggregateTests
 		// Act
 		var app = AppAggregate.FromGarmin(garminApp);
 		// Assert
-		Assert.Equal(4200_0000_1337UL, app.RatingSortKey);
+		Assert.Equal(420_000_001_337UL, app.RatingSortKey);
 	}
 }
