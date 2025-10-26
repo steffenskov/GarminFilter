@@ -13,7 +13,6 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/steffenskov/GarminFilter</PackageProjectUrl>
         <PackageTags>garmin, filter</PackageTags>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>

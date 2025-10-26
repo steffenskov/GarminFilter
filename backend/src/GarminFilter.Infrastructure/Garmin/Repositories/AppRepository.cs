@@ -1,4 +1,3 @@
-using System.Text;
 using GarminFilter.Domain.App.Aggregates;
 using GarminFilter.Domain.App.Repositories;
 using GarminFilter.SharedKernel.App.ValueObjects;
@@ -31,29 +30,28 @@ internal class AppRepository : BaseAggregateRepository<AppAggregate, AppId>, IAp
 
 	public IEnumerable<AppAggregate> Query(DeviceId deviceId, AppType type, bool includePaid, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize, AppOrder orderBy)
 	{
-		// Build the tags exclusion part
-		var expressionBuilder = new StringBuilder();
+		ArgumentOutOfRangeException.ThrowIfNegative(pageIndex);
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize);
 
-		expressionBuilder.AppendLine($"$.{nameof(AppAggregate.Type)} = '{type}'");
-		expressionBuilder.AppendLine($"AND $.{nameof(AppAggregate.SupportedDevices)}[*] ANY = {deviceId}");
+		var query = _collection
+			.Query()
+			.Where(app => app.Type == type)
+			.Where(app => app.SupportedDevices.Contains(deviceId));
 
 		foreach (var permission in excludePermissions)
 		{
-			expressionBuilder.AppendLine($"AND ($.{nameof(AppAggregate.RequiredPermissions)}[*] ALL != '{permission}')");
+			query = query.Where(app => !app.RequiredPermissions.Contains(permission));
 		}
 
 		if (!includePaid)
 		{
-			expressionBuilder.AppendLine($"AND $.{nameof(AppAggregate.IsPaid)} = FALSE");
+			query = query.Where(app => app.IsPaid == false);
 		}
 
 		var orderProperty = GetOrderBy(orderBy);
 
-		var skip = pageIndex * pageSize;
-
-		return _collection
-			.Query()
-			.Where(expressionBuilder.ToString())
+		var skip = checked(pageIndex * pageSize);
+		return query
 			.OrderByDescending($"$.{orderProperty}")
 			.Skip(skip)
 			.Limit(pageSize)

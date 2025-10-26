@@ -40,6 +40,9 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
   String? _selectedOrderBy;
   bool _isLoading = false;
   String? _error;
+
+  bool _isLoadingOrderBy = false;
+  String? _orderByError;
   
   List<AppViewModel> _watchfaces = [];
   bool _isLoadingWatchfaces = false;
@@ -79,18 +82,18 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
 
   Future<void> _loadOrderByOptions() async {
     setState(() {
-      _isLoading = true;
-      _error = null;
+      _isLoadingOrderBy = true;
+      _orderByError = null;
     });
     
     try {
       final orderByOptions = await GarminApiService.getOrderByOptions();
       setState(() {
         _orderByOptions = orderByOptions;
-        _isLoading = false;
+        _isLoadingOrderBy = false;
       });
 
-       // Load selected device after devices are loaded
+       // Load selected orderBy after orderBy options are loaded
       final selectedOrderBy = await PreferencesService.loadSelectedOrderBy(orderByOptions);
       if (selectedOrderBy != null) {
         setState(() {
@@ -104,8 +107,8 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
       }
     } catch (e) {
       setState(() {
-        _error = e.toString();
-        _isLoading = false;
+        _orderByError = e.toString();
+        _isLoadingOrderBy = false;
       });
     }
   }
@@ -175,6 +178,9 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
   }
 
   Future<void> _searchWatchfaces(GarminDevice device, {bool resetPagination = true}) async {
+    if (_selectedOrderBy == null)
+      return;
+
     if (resetPagination) {
       setState(() {
         _currentPageIndex = 0;
@@ -510,13 +516,13 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    if (_isLoading)
+                    if (_isLoadingOrderBy)
                       const Center(child: CircularProgressIndicator())
-                    else if (_error != null)
+                    else if (_orderByError != null)
                       Column(
                         children: [
                           Text(
-                            'Error: $_error',
+                            'Error: $_orderByError',
                             style: TextStyle(color: Colors.red[700]),
                           ),
                           const SizedBox(height: 8),
