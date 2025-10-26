@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\src\GarminFilter.Api\GarminFilter.Api.csproj"/>
         <ProjectReference Include="..\..\src\GarminFilter.Domain\GarminFilter.Domain.csproj"/>
         <ProjectReference Include="..\..\src\GarminFilter.Infrastructure\GarminFilter.Infrastructure.csproj"/>
     </ItemGroup>

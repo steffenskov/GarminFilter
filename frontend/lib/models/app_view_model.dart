@@ -11,6 +11,7 @@ class AppViewModel {
   final String developer;
   final double averageRating;
   final int reviewCount;
+  final String releaseDate;
 
   AppViewModel({
     required this.permissions,
@@ -23,6 +24,7 @@ class AppViewModel {
     required this.developer,
     required this.averageRating,
     required this.reviewCount,
+    required this.releaseDate
   });
 
   factory AppViewModel.fromJson(Map<String, dynamic> json) {
@@ -39,21 +41,7 @@ class AppViewModel {
       developer: json['developer'] as String,
       averageRating: (json['averageRating'] as num?)?.toDouble() ?? 0.0,
       reviewCount: json['reviewCount'] as int? ?? 0,
+      releaseDate: json['releaseDate'] as String
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'permissions': permissions.map((p) => p.toJson()).toList(),
-      'isPaid': isPaid,
-      'url': url,
-      'imageUrl': imageUrl,
-      'type': type,
-      'id': id,
-      'name': name,
-      'developer': developer,
-      'averageRating': averageRating,
-      'reviewCount': reviewCount,
-    };
   }
 }

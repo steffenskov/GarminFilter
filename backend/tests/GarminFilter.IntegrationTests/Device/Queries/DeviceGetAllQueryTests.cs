@@ -1,19 +1,20 @@
+using GarminFilter.Client.Entities;
 using GarminFilter.Domain.Device.Aggregates;
 using GarminFilter.Domain.Device.Queries;
 using GarminFilter.Domain.Device.Repositories;
-using GarminFilter.Domain.Device.ValueObjects;
+using GarminFilter.SharedKernel.Device.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.Device.Queries;
 
 public class DeviceGetAllQueryTests : BaseTests
 {
 	private readonly IMediator _mediator;
-	private readonly IGarminDeviceRepository _repository;
+	private readonly IDeviceRepository _repository;
 
 	public DeviceGetAllQueryTests(ContainerFixture fixture) : base(fixture)
 	{
 		_mediator = fixture.Provider.GetRequiredService<IMediator>();
-		_repository = fixture.Provider.GetRequiredService<IGarminDeviceRepository>();
+		_repository = fixture.Provider.GetRequiredService<IDeviceRepository>();
 	}
 
 	[Fact]
@@ -30,7 +31,11 @@ public class DeviceGetAllQueryTests : BaseTests
 			Name = "Second device",
 			Id = new DeviceId(Random.Shared.Next())
 		};
-		_repository.Upsert(device1, device2);
+
+		var devices = new[] { device1, device2 }
+			.Select(DeviceAggregate.FromGarmin);
+
+		_repository.Upsert(devices);
 
 		var query = new DeviceGetAllQuery();
 
@@ -39,7 +44,7 @@ public class DeviceGetAllQueryTests : BaseTests
 
 		// Assert
 		Assert.NotEmpty(result);
-		Assert.Contains(device1, result);
-		Assert.Contains(device2, result);
+		Assert.Contains(result, device => device.Id == device1.Id);
+		Assert.Contains(result, device => device.Id == device2.Id);
 	}
 }

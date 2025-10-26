@@ -1,19 +1,19 @@
-using GarminFilter.Domain.Device.Aggregates;
+using GarminFilter.Client.Entities;
 using GarminFilter.Domain.Device.Commands;
 using GarminFilter.Domain.Device.Repositories;
-using GarminFilter.Domain.Device.ValueObjects;
+using GarminFilter.SharedKernel.Device.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.Device.Commands;
 
 public class DeviceUpsertCommandTests : BaseTests
 {
 	private readonly IMediator _mediator;
-	private readonly IGarminDeviceRepository _repository;
+	private readonly IDeviceRepository _repository;
 
 	public DeviceUpsertCommandTests(ContainerFixture fixture) : base(fixture)
 	{
 		_mediator = fixture.Provider.GetRequiredService<IMediator>();
-		_repository = fixture.Provider.GetRequiredService<IGarminDeviceRepository>();
+		_repository = fixture.Provider.GetRequiredService<IDeviceRepository>();
 	}
 
 	[Fact]
@@ -33,7 +33,8 @@ public class DeviceUpsertCommandTests : BaseTests
 		// Assert
 		var fetched = _repository.GetSingle(device.Id);
 		Assert.NotNull(fetched);
-		Assert.Equal(device, fetched);
+		Assert.Equal(device.Id, fetched.Id);
+		Assert.Equal(device.Name, fetched.Name);
 	}
 
 	[Fact]
@@ -60,8 +61,9 @@ public class DeviceUpsertCommandTests : BaseTests
 		// Assert
 		var fetched = _repository.GetSingle(device.Id);
 		Assert.NotNull(fetched);
-		Assert.NotEqual(device, fetched);
-		Assert.Equal(updatedDevice, fetched);
+		Assert.NotEqual(device.Name, fetched.Name);
+		Assert.Equal(updatedDevice.Id, fetched.Id);
+		Assert.Equal(updatedDevice.Name, fetched.Name);
 	}
 
 	[Fact]
@@ -85,7 +87,7 @@ public class DeviceUpsertCommandTests : BaseTests
 
 		// Assert
 		var all = _repository.GetAll().ToList();
-		Assert.Contains(device1, all);
-		Assert.Contains(device2, all);
+		Assert.Contains(all, device => device.Id == device1.Id);
+		Assert.Contains(all, device => device.Id == device2.Id);
 	}
 }

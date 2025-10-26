@@ -1,5 +1,5 @@
 using GarminFilter.Api.Models;
-using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.Api.Endpoints;
 

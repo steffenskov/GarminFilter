@@ -1,19 +1,19 @@
-using GarminFilter.Domain.App.Aggregates;
+using GarminFilter.Client.Entities;
 using GarminFilter.Domain.App.Queries;
 using GarminFilter.Domain.App.Repositories;
-using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.App.Queries;
 
 public class AppGetCountQueryTests : BaseTests
 {
 	private readonly IMediator _mediator;
-	private readonly IGarminAppRepository _repository;
+	private readonly IAppRepository _repository;
 
 	public AppGetCountQueryTests(ContainerFixture fixture) : base(fixture)
 	{
 		_mediator = fixture.Provider.GetRequiredService<IMediator>();
-		_repository = fixture.Provider.GetRequiredService<IGarminAppRepository>();
+		_repository = fixture.Provider.GetRequiredService<IAppRepository>();
 	}
 
 	[Fact]
@@ -44,8 +44,8 @@ public class AppGetCountQueryTests : BaseTests
 			TypeId = AppTypes.WatchFace,
 			Id = AppId.New()
 		};
-		_repository.Upsert(includedApp1);
-		_repository.Upsert(includedApp2);
+		_repository.Upsert(AppAggregate.FromGarmin(includedApp1));
+		_repository.Upsert(AppAggregate.FromGarmin(includedApp2));
 
 		var query = new AppGetCountQuery(AppTypes.WatchFace);
 

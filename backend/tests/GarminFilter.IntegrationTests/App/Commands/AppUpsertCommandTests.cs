@@ -1,19 +1,19 @@
-using GarminFilter.Domain.App.Aggregates;
+using GarminFilter.Client.Entities;
 using GarminFilter.Domain.App.Commands;
 using GarminFilter.Domain.App.Repositories;
-using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.App.Commands;
 
 public class AppUpsertCommandTests : BaseTests
 {
 	private readonly IMediator _mediator;
-	private readonly IGarminAppRepository _repository;
+	private readonly IAppRepository _repository;
 
 	public AppUpsertCommandTests(ContainerFixture fixture) : base(fixture)
 	{
 		_mediator = fixture.Provider.GetRequiredService<IMediator>();
-		_repository = fixture.Provider.GetRequiredService<IGarminAppRepository>();
+		_repository = fixture.Provider.GetRequiredService<IAppRepository>();
 	}
 
 	[Fact]
@@ -33,7 +33,7 @@ public class AppUpsertCommandTests : BaseTests
 		// Assert
 		var fetched = _repository.GetSingle(app.Id);
 		Assert.NotNull(fetched);
-		Assert.Equal(app.TypeId, fetched.TypeId);
+		Assert.Equal(app.TypeId, fetched.Type);
 		Assert.Equal(app.Id, fetched.Id);
 	}
 
@@ -60,7 +60,7 @@ public class AppUpsertCommandTests : BaseTests
 		// Assert
 		var fetched = _repository.GetSingle(app.Id);
 		Assert.NotNull(fetched);
-		Assert.NotEqual(app.Permissions, fetched.Permissions);
-		Assert.Equal(updatedApp.Permissions, fetched.Permissions);
+		Assert.NotEqual(app.Permissions, fetched.RequiredPermissions);
+		Assert.Equal(updatedApp.Permissions, fetched.RequiredPermissions);
 	}
 }

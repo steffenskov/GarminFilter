@@ -13,12 +13,15 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/steffenskov/GarminFilter</PackageProjectUrl>
         <PackageTags>garmin, filter</PackageTags>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="FreeMediator"/>
         <PackageReference Include="StrongTypedId"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GarminFilter.SharedKernel\GarminFilter.SharedKernel.csproj"/>
     </ItemGroup>
 
 </Project>

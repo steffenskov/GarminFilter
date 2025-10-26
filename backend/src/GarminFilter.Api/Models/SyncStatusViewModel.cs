@@ -1,5 +1,5 @@
-using GarminFilter.Domain.App.ValueObjects;
 using GarminFilter.Domain.Sync.Aggregates;
+using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.Api.Models;
 

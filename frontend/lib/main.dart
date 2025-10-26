@@ -37,8 +37,12 @@ class GarminFilterHomePage extends StatefulWidget {
 class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
   List<GarminDevice> _devices = [];
   GarminDevice? _selectedDevice;
+  String? _selectedOrderBy;
   bool _isLoading = false;
   String? _error;
+
+  bool _isLoadingOrderBy = false;
+  String? _orderByError;
   
   List<AppViewModel> _watchfaces = [];
   bool _isLoadingWatchfaces = false;
@@ -49,6 +53,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
   bool _includePaid = false;
   List<Permission> _availablePermissions = [];
   List<String> _selectedExcludePermissions = [];
+  List<String> _orderByOptions = [];
   bool _isLoadingPermissions = false;
   String? _permissionsError;
 
@@ -56,6 +61,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
   void initState() {
     super.initState();
     _loadDevices();
+    _loadOrderByOptions();
     _loadPermissions();
     _loadPreferences();
     _scrollController.addListener(_onScroll);
@@ -71,6 +77,39 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
     if (_scrollController.position.pixels >= 
         _scrollController.position.maxScrollExtent - 200) {
       _loadMoreWatchfaces();
+    }
+  }
+
+  Future<void> _loadOrderByOptions() async {
+    setState(() {
+      _isLoadingOrderBy = true;
+      _orderByError = null;
+    });
+    
+    try {
+      final orderByOptions = await GarminApiService.getOrderByOptions();
+      setState(() {
+        _orderByOptions = orderByOptions;
+        _isLoadingOrderBy = false;
+      });
+
+       // Load selected orderBy after orderBy options are loaded
+      final selectedOrderBy = await PreferencesService.loadSelectedOrderBy(orderByOptions);
+      if (selectedOrderBy != null) {
+        setState(() {
+          _selectedOrderBy = selectedOrderBy;
+        });
+      }
+      else{
+        setState(() {
+          _selectedOrderBy = orderByOptions.first;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _orderByError = e.toString();
+        _isLoadingOrderBy = false;
+      });
     }
   }
 
@@ -139,6 +178,9 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
   }
 
   Future<void> _searchWatchfaces(GarminDevice device, {bool resetPagination = true}) async {
+    if (_selectedOrderBy == null)
+      return;
+
     if (resetPagination) {
       setState(() {
         _currentPageIndex = 0;
@@ -159,6 +201,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
         includePaid: _includePaid,
         pageIndex: _currentPageIndex,
         pageSize: 30,
+        orderBy: _selectedOrderBy!,
       );
       
       final watchfaces = await GarminApiService.getWatchfaces(device.id, query);
@@ -459,6 +502,101 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
             ),
             const SizedBox(height: 16),
             
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Order by',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    if (_isLoadingOrderBy)
+                      const Center(child: CircularProgressIndicator())
+                    else if (_orderByError != null)
+                      Column(
+                        children: [
+                          Text(
+                            'Error: $_orderByError',
+                            style: TextStyle(color: Colors.red[700]),
+                          ),
+                          const SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: _loadOrderByOptions,
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      )
+                    else
+                      Autocomplete<String>(
+                        optionsBuilder: (TextEditingValue textEditingValue) {
+                          if (textEditingValue.text.isEmpty) {
+                            return _orderByOptions;
+                          }
+                          return _orderByOptions.where((option) =>
+                              option.toLowerCase().contains(textEditingValue.text.toLowerCase()));
+                        },
+                        displayStringForOption: (String option) => option,
+                        onSelected: (String option) async {
+                          setState(() {
+                            _selectedOrderBy = option;
+                          });
+                          await PreferencesService.saveSelectedOrderBy(option);
+                          if (_selectedDevice != null)
+                          {
+                            _searchWatchfaces(_selectedDevice!, resetPagination: true);
+                          }
+                        },
+                        fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                          if (_selectedOrderBy != null) {
+                            textEditingController.text = _selectedOrderBy!;
+                          }
+                          return TextFormField(
+                            controller: textEditingController,
+                            focusNode: focusNode,
+                            decoration: InputDecoration(
+                              labelText: 'Choose ordering',
+                              hintText: 'Type to search ordering options...',
+                              border: const OutlineInputBorder(),
+                              suffixIcon: null
+                            ),
+                          );
+                        },
+                        optionsViewBuilder: (context, onSelected, options) {
+                          return Align(
+                            alignment: Alignment.topLeft,
+                            child: Material(
+                              elevation: 4.0,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(maxHeight: 200),
+                                child: ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
+                                  itemCount: options.length,
+                                  itemBuilder: (context, index) {
+                                    final option = options.elementAt(index);
+                                    return ListTile(
+                                      dense: true,
+                                      title: Text(option),
+                                      onTap: () => onSelected(option),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
             // Watchface Results
             Expanded(
               child: _selectedDevice == null
@@ -562,6 +700,14 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                                                               const SizedBox(height: 2),
                                                               Text(
                                                                 watchface.developer,
+                                                                style: const TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors.grey,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 2),
+                                                              Text(
+                                                                watchface.releaseDate,
                                                                 style: const TextStyle(
                                                                   fontSize: 12,
                                                                   color: Colors.grey,

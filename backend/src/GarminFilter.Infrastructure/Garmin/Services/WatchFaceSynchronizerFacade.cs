@@ -1,6 +1,7 @@
-using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.Client.Services;
 using GarminFilter.Domain.Policies;
-using GarminFilter.Domain.Services;
+using GarminFilter.SharedKernel.App.ValueObjects;
+using Microsoft.Extensions.Logging;
 
 namespace GarminFilter.Infrastructure.Garmin.Services;
 
