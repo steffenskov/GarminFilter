@@ -1,5 +1,5 @@
 using GarminFilter.Domain.App.Repositories;
-using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.Domain.App.Queries;
 
@@ -7,9 +7,9 @@ public record AppExistsQuery(AppId Id) : IRequest<bool>;
 
 file sealed class Handler : IRequestHandler<AppExistsQuery, bool>
 {
-	private readonly IGarminAppRepository _repository;
+	private readonly IAppRepository _repository;
 
-	public Handler(IGarminAppRepository repository)
+	public Handler(IAppRepository repository)
 	{
 		_repository = repository;
 	}

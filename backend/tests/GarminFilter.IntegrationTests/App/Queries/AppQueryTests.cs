@@ -1,20 +1,20 @@
-using GarminFilter.Domain.App.Aggregates;
+using GarminFilter.Client.Entities;
 using GarminFilter.Domain.App.Queries;
 using GarminFilter.Domain.App.Repositories;
-using GarminFilter.Domain.App.ValueObjects;
-using GarminFilter.Domain.Device.ValueObjects;
+using GarminFilter.SharedKernel.App.ValueObjects;
+using GarminFilter.SharedKernel.Device.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.App.Queries;
 
 public class AppQueryTests : BaseTests
 {
 	private readonly IMediator _mediator;
-	private readonly IGarminAppRepository _repository;
+	private readonly IAppRepository _repository;
 
 	public AppQueryTests(ContainerFixture fixture) : base(fixture)
 	{
 		_mediator = fixture.Provider.GetRequiredService<IMediator>();
-		_repository = fixture.Provider.GetRequiredService<IGarminAppRepository>();
+		_repository = fixture.Provider.GetRequiredService<IAppRepository>();
 	}
 
 	[Fact]
@@ -76,7 +76,10 @@ public class AppQueryTests : BaseTests
 			}
 		};
 
-		_repository.Upsert(includedApp1, includedApp2, otherTypeApp, incompatibleDeviceApp, incompatiblePermission1, incompatiblePermission2, paidApp);
+		var apps = new[] { includedApp1, includedApp2, otherTypeApp, incompatibleDeviceApp, incompatiblePermission1, incompatiblePermission2, paidApp }
+			.Select(AppAggregate.FromGarmin);
+
+		_repository.Upsert(apps);
 
 		var query = new AppQuery(myDevice, AppTypes.WatchFace, false, [new AppPermission(AppPermissions.Sensor), new AppPermission(AppPermissions.BluetoothLowEnergy)], 0, int.MaxValue,
 			AppOrders.Newest);

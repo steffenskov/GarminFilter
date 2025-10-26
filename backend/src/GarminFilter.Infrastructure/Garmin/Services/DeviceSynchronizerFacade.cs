@@ -1,5 +1,7 @@
+using GarminFilter.Client.Services;
 using GarminFilter.Domain.Device.Commands;
 using GarminFilter.Domain.Services;
+using Microsoft.Extensions.Logging;
 
 namespace GarminFilter.Infrastructure.Garmin.Services;
 
@@ -18,15 +20,14 @@ internal class DeviceSynchronizerFacade : ISynchronizerFacade
 
 	public async Task SynchronizeAsync(CancellationToken cancellationToken = default)
 	{
-		var devices = await _client.GetDevicesAsync(cancellationToken);
-		if (devices.Count == 0)
+		var garminDevices = await _client.GetDevicesAsync(cancellationToken);
+		if (garminDevices.Count == 0)
 		{
 			return;
 		}
 
-		_logger?.LogInformation("Upserting {deviceCount} devices", devices.Count);
+		_logger?.LogInformation("Upserting {deviceCount} devices", garminDevices.Count);
 
-
-		await _mediator.Send(new DeviceUpsertCommand(devices), cancellationToken);
+		await _mediator.Send(new DeviceUpsertCommand(garminDevices), CancellationToken.None);
 	}
 }

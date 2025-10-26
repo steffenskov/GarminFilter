@@ -6,7 +6,8 @@ class PreferencesService {
   static const String _selectedDeviceNameKey = 'selected_device_name';
   static const String _includePaidKey = 'include_paid';
   static const String _excludedPermissionsKey = 'excluded_permissions';
-
+  static const String _selectedOrderByKey = 'selected_order_by';
+  
   // Save selected device
   static Future<void> saveSelectedDevice(GarminDevice? device) async {
     final prefs = await SharedPreferences.getInstance();
@@ -18,6 +19,29 @@ class PreferencesService {
       await prefs.remove(_selectedDeviceNameKey);
     }
   }
+
+  // Load selected order by
+  static Future<String?> loadSelectedOrderBy(List<String> orderByOptions) async {
+    final prefs = await SharedPreferences.getInstance();
+    final orderBy = prefs.getString(_selectedOrderByKey);
+    if (orderBy != null) {
+       try {
+        return orderByOptions.firstWhere((option) => option == orderBy);
+      } catch (e) {
+        // orderBy not found in current list, return null
+        return null;
+      }
+    }
+    
+    return null;
+  }
+
+  // Save selected order by
+  static Future<void> saveSelectedOrderBy(String orderBy) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_selectedOrderByKey, orderBy);
+  }
+
 
   // Load selected device
   static Future<GarminDevice?> loadSelectedDevice(List<GarminDevice> devices) async {
@@ -68,5 +92,6 @@ class PreferencesService {
     await prefs.remove(_selectedDeviceNameKey);
     await prefs.remove(_includePaidKey);
     await prefs.remove(_excludedPermissionsKey);
+    await prefs.remove(_selectedOrderByKey);
   }
 }

@@ -24,6 +24,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFilter.IntegrationTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFilter.UnitTests", "tests\GarminFilter.UnitTests\GarminFilter.UnitTests.csproj", "{37946E6E-2BBD-404B-AACE-AE6475777096}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFilter.Client", "src\GarminFilter.Client\GarminFilter.Client.csproj", "{F48C4CBE-53E1-4FFA-B091-93AB3F6AB812}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarminFilter.SharedKernel", "src\GarminFilter.SharedKernel\GarminFilter.SharedKernel.csproj", "{FACF302E-C214-4F6C-99D1-86AD01D288B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +42,8 @@ Global
 		{CA389E40-5884-4C30-9643-BBC49C949B24} = {94B9071A-7D44-40A5-B388-E6E8CEADA847}
 		{8725E60F-6410-4952-BE56-9E3062CC8B18} = {DCA9C338-8859-4A6F-944B-C66209D64532}
 		{37946E6E-2BBD-404B-AACE-AE6475777096} = {DCA9C338-8859-4A6F-944B-C66209D64532}
+		{F48C4CBE-53E1-4FFA-B091-93AB3F6AB812} = {94B9071A-7D44-40A5-B388-E6E8CEADA847}
+		{FACF302E-C214-4F6C-99D1-86AD01D288B5} = {94B9071A-7D44-40A5-B388-E6E8CEADA847}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EFDBBEC2-66A4-4197-9EC7-2641FFE48BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -60,5 +66,13 @@ Global
 		{37946E6E-2BBD-404B-AACE-AE6475777096}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37946E6E-2BBD-404B-AACE-AE6475777096}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37946E6E-2BBD-404B-AACE-AE6475777096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F48C4CBE-53E1-4FFA-B091-93AB3F6AB812}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F48C4CBE-53E1-4FFA-B091-93AB3F6AB812}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F48C4CBE-53E1-4FFA-B091-93AB3F6AB812}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F48C4CBE-53E1-4FFA-B091-93AB3F6AB812}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FACF302E-C214-4F6C-99D1-86AD01D288B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FACF302E-C214-4F6C-99D1-86AD01D288B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FACF302E-C214-4F6C-99D1-86AD01D288B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FACF302E-C214-4F6C-99D1-86AD01D288B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

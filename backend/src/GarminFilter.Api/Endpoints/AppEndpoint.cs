@@ -1,4 +1,4 @@
-using GarminFilter.Domain.Services;
+using GarminFilter.Client.Services;
 
 namespace GarminFilter.Api.Endpoints;
 

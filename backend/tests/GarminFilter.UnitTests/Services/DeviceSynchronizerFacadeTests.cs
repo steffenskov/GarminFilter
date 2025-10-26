@@ -1,9 +1,9 @@
 using FreeMediator;
-using GarminFilter.Domain.Device.Aggregates;
+using GarminFilter.Client.Entities;
+using GarminFilter.Client.Services;
 using GarminFilter.Domain.Device.Commands;
-using GarminFilter.Domain.Device.ValueObjects;
-using GarminFilter.Domain.Services;
 using GarminFilter.Infrastructure.Garmin.Services;
+using GarminFilter.SharedKernel.Device.ValueObjects;
 
 namespace GarminFilter.UnitTests.Services;
 
@@ -61,7 +61,7 @@ public class DeviceSynchronizerFacadeTests
 
 		// Assert
 		var upsertCommand = Assert.Single(upsertCommands);
-		Assert.Contains(upsertCommand.Devices, device => device == device1);
-		Assert.Contains(upsertCommand.Devices, device => device == device2);
+		Assert.Contains(upsertCommand.Devices, device => (GarminDevice)device == device1);
+		Assert.Contains(upsertCommand.Devices, device => (GarminDevice)device == device2);
 	}
 }

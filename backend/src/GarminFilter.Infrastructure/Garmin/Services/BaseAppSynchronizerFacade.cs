@@ -1,11 +1,14 @@
+using GarminFilter.Client;
+using GarminFilter.Client.Services;
 using GarminFilter.Domain.App.Commands;
 using GarminFilter.Domain.App.Queries;
-using GarminFilter.Domain.App.ValueObjects;
 using GarminFilter.Domain.Policies;
 using GarminFilter.Domain.Services;
 using GarminFilter.Domain.Sync.Aggregates;
 using GarminFilter.Domain.Sync.Commands;
 using GarminFilter.Domain.Sync.Queries;
+using GarminFilter.SharedKernel.App.ValueObjects;
+using Microsoft.Extensions.Logging;
 
 namespace GarminFilter.Infrastructure.Garmin.Services;
 

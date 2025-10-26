@@ -1,5 +1,5 @@
-using GarminFilter.Domain.App.ValueObjects;
-using GarminFilter.Domain.Services;
+using GarminFilter.Client.Services;
+using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.Services;
 

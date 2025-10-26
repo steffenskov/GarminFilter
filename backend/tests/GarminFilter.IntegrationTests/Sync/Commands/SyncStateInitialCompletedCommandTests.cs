@@ -1,7 +1,7 @@
-using GarminFilter.Domain.App.ValueObjects;
 using GarminFilter.Domain.Sync.Aggregates;
 using GarminFilter.Domain.Sync.Commands;
 using GarminFilter.Domain.Sync.Repositories;
+using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.Sync.Commands;
 

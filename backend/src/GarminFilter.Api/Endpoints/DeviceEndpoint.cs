@@ -1,8 +1,8 @@
 using GarminFilter.Api.Models;
 using GarminFilter.Domain.App.Queries;
-using GarminFilter.Domain.App.ValueObjects;
 using GarminFilter.Domain.Device.Queries;
-using GarminFilter.Domain.Device.ValueObjects;
+using GarminFilter.SharedKernel.App.ValueObjects;
+using GarminFilter.SharedKernel.Device.ValueObjects;
 
 namespace GarminFilter.Api.Endpoints;
 

@@ -1,10 +1,11 @@
 using FreeMediator;
-using GarminFilter.Domain.App.Aggregates;
+using GarminFilter.Client;
+using GarminFilter.Client.Entities;
+using GarminFilter.Client.Services;
 using GarminFilter.Domain.App.Commands;
-using GarminFilter.Domain.App.ValueObjects;
-using GarminFilter.Domain.Services;
 using GarminFilter.Infrastructure.Garmin.Policies;
 using GarminFilter.Infrastructure.Garmin.Services;
+using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.UnitTests.Services;
 
@@ -61,8 +62,8 @@ public class BaseAppSynchronizerFacadeTests
 
 		// Assert
 		Assert.NotEmpty(upsertCommands);
-		Assert.Contains(upsertCommands, c => c.App == app1);
-		Assert.Contains(upsertCommands, c => c.App == app2);
+		Assert.Contains(upsertCommands, c => (GarminApp)c.App == app1);
+		Assert.Contains(upsertCommands, c => (GarminApp)c.App == app2);
 	}
 
 	[Fact]

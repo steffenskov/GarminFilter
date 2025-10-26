@@ -18,6 +18,29 @@ class GarminApiService {
     return relativeUrl; // Already absolute
   }
 
+    static Future<List<String>> getOrderByOptions() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/ordering'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonList = json.decode(response.body);
+        print('Raw JSON response: $jsonList'); // Debug print
+        return jsonList.map((json) {
+          print('Processing orderBy JSON: $json'); // Debug print
+          return json['name'] as String;
+        }).toList();
+      } else {
+        throw Exception('Failed to load orderBy: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error details: $e'); // Debug print
+      throw Exception('Error fetching orderBy: $e');
+    }
+  }
+
   // Get list of available devices
   static Future<List<GarminDevice>> getDevices() async {
     try {

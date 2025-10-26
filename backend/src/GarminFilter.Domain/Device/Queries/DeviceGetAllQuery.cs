@@ -3,18 +3,18 @@ using GarminFilter.Domain.Device.Repositories;
 
 namespace GarminFilter.Domain.Device.Queries;
 
-public record DeviceGetAllQuery : IRequest<IEnumerable<GarminDevice>>;
+public record DeviceGetAllQuery : IRequest<IEnumerable<DeviceAggregate>>;
 
-file sealed class Handler : IRequestHandler<DeviceGetAllQuery, IEnumerable<GarminDevice>>
+file sealed class Handler : IRequestHandler<DeviceGetAllQuery, IEnumerable<DeviceAggregate>>
 {
-	private readonly IGarminDeviceRepository _repository;
+	private readonly IDeviceRepository _repository;
 
-	public Handler(IGarminDeviceRepository repository)
+	public Handler(IDeviceRepository repository)
 	{
 		_repository = repository;
 	}
 
-	public Task<IEnumerable<GarminDevice>> Handle(DeviceGetAllQuery request, CancellationToken cancellationToken)
+	public Task<IEnumerable<DeviceAggregate>> Handle(DeviceGetAllQuery request, CancellationToken cancellationToken)
 	{
 		return Task.FromResult(_repository.GetAll());
 	}

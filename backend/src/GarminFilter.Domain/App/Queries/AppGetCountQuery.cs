@@ -1,5 +1,5 @@
 using GarminFilter.Domain.App.Repositories;
-using GarminFilter.Domain.App.ValueObjects;
+using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.Domain.App.Queries;
 
@@ -7,9 +7,9 @@ public record AppGetCountQuery(AppType Type) : IRequest<int>;
 
 file sealed class Handler : IRequestHandler<AppGetCountQuery, int>
 {
-	private readonly IGarminAppRepository _repository;
+	private readonly IAppRepository _repository;
 
-	public Handler(IGarminAppRepository repository)
+	public Handler(IAppRepository repository)
 	{
 		_repository = repository;
 	}

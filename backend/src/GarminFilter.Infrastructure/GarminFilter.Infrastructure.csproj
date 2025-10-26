@@ -20,10 +20,10 @@
         <PackageReference Include="LiteDB"/>
         <PackageReference Include="StrongTypedId.LiteDB"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
-        <PackageReference Include="Microsoft.Extensions.Http"/>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\GarminFilter.Client\GarminFilter.Client.csproj"/>
         <ProjectReference Include="..\GarminFilter.Domain\GarminFilter.Domain.csproj"/>
     </ItemGroup>
 
