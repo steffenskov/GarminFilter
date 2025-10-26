@@ -28,6 +28,6 @@ internal class DeviceSynchronizerFacade : ISynchronizerFacade
 
 		_logger?.LogInformation("Upserting {deviceCount} devices", garminDevices.Count);
 
-		await _mediator.Send(new DeviceUpsertCommand(garminDevices), CancellationToken.None);
+		await _mediator.Send(new DeviceUpsertCommand(garminDevices), cancellationToken);
 	}
 }

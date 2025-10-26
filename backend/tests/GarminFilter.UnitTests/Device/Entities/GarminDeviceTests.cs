@@ -18,7 +18,7 @@ public class GarminDeviceTests
 
 		// Assert
 		Assert.NotNull(app);
-		Assert.Equal(DeviceId.Create(20), app.Id);
+		Assert.Equal(new DeviceId(20), app.Id);
 		Assert.Equal("Forerunner® 235", app.Name);
 	}
 }

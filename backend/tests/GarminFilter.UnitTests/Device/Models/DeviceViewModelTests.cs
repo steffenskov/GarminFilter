@@ -14,7 +14,7 @@ public class DeviceViewModelTests
 		var garminDevice = new GarminDevice
 		{
 			Name = "Fenix 8",
-			Id = DeviceId.Create(308),
+			Id = new DeviceId(308),
 			AdditionalNames = ["Quatix 8"]
 		};
 
@@ -35,7 +35,7 @@ public class DeviceViewModelTests
 		var garminDevice = new GarminDevice
 		{
 			Name = "Fenix 8",
-			Id = DeviceId.Create(308)
+			Id = new DeviceId(308)
 		};
 
 		var device = DeviceAggregate.FromGarmin(garminDevice);
@@ -56,7 +56,7 @@ public class DeviceViewModelTests
 		{
 			Name = "Fenix 8",
 			UrlName = "fenix-8",
-			Id = DeviceId.Create(308)
+			Id = new DeviceId(308)
 		};
 
 		var device = DeviceAggregate.FromGarmin(garminDevice);
