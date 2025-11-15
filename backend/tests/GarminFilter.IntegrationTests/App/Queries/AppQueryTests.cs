@@ -17,6 +17,74 @@ public class AppQueryTests : BaseTests
 		_repository = fixture.Provider.GetRequiredService<IAppRepository>();
 	}
 
+	[Theory]
+	[InlineData(null)]
+	[InlineData(true)]
+	[InlineData(false)]
+	public async Task AppQuery_SomeExists_ReturnsMatchingPaid(bool? paid)
+	{
+		// Arrange
+		var myDevice = new DeviceId(Random.Shared.Next());
+		var freeApp = new GarminApp
+		{
+			TypeId = AppTypes.WatchFace,
+			Id = AppId.New(),
+			CompatibleDeviceTypeIds = [myDevice]
+		};
+
+		var paidApp = new GarminApp
+		{
+			TypeId = AppTypes.WatchFace,
+			Id = AppId.New(),
+			CompatibleDeviceTypeIds = [myDevice],
+			Pricing = new AppPricing
+			{
+				PartNumber = "foo"
+			}
+		};
+
+		var thirdPartyPaidApp = new GarminApp
+		{
+			TypeId = AppTypes.WatchFace,
+			Id = AppId.New(),
+			CompatibleDeviceTypeIds = [myDevice],
+			PaymentModel = GarminPaymentModel.ThirdPartyPayment
+		};
+
+		var apps = new[] { freeApp, paidApp, thirdPartyPaidApp }
+			.Select(AppAggregate.FromGarmin);
+
+		_repository.Upsert(apps);
+
+		var query = new AppQuery(myDevice, AppTypes.WatchFace, paid, [new AppPermission(AppPermissions.Sensor), new AppPermission(AppPermissions.BluetoothLowEnergy)], 0, int.MaxValue,
+			AppOrders.Newest);
+
+		// Act
+		var result = (await _mediator.Send(query)).ToList();
+
+		// Assert
+		if (paid is null)
+		{
+			Assert.Contains(result, app => app.Id == freeApp.Id);
+			Assert.Contains(result, app => app.Id == paidApp.Id);
+			Assert.Contains(result, app => app.Id == thirdPartyPaidApp.Id);
+		}
+
+		if (paid == true)
+		{
+			Assert.DoesNotContain(result, app => app.Id == freeApp.Id);
+			Assert.Contains(result, app => app.Id == paidApp.Id);
+			Assert.Contains(result, app => app.Id == thirdPartyPaidApp.Id);
+		}
+
+		if (paid == false)
+		{
+			Assert.Contains(result, app => app.Id == freeApp.Id);
+			Assert.DoesNotContain(result, app => app.Id == paidApp.Id);
+			Assert.DoesNotContain(result, app => app.Id == thirdPartyPaidApp.Id);
+		}
+	}
+
 	[Fact]
 	public async Task AppQuery_SomeExists_ReturnsThose()
 	{

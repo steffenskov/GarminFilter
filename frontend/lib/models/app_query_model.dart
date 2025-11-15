@@ -1,13 +1,13 @@
 class AppQueryModel {
   final List<String> excludePermissions;
-  final bool includePaid;
+  final bool? paid;
   final int pageIndex;
   final int pageSize;
   final String orderBy;
 
   AppQueryModel({
     required this.excludePermissions,
-    required this.includePaid,
+    required this.paid,
     required this.pageIndex,
     required this.pageSize,
     required this.orderBy,
@@ -16,7 +16,7 @@ class AppQueryModel {
   factory AppQueryModel.fromJson(Map<String, dynamic> json) {
     return AppQueryModel(
       excludePermissions: List<String>.from(json['excludePermissions']),
-      includePaid: json['includePaid'] as bool,
+      paid: json['includePaid'] as bool?,
       pageIndex: json['pageIndex'] as int,
       pageSize: json['pageSize'] as int,
       orderBy: json['orderBy'] as String,
@@ -26,7 +26,7 @@ class AppQueryModel {
   Map<String, dynamic> toJson() {
     return {
       'excludePermissions': excludePermissions,
-      'includePaid': includePaid,
+      'paid': paid,
       'pageIndex': pageIndex,
       'pageSize': pageSize,
       'orderBy': orderBy,

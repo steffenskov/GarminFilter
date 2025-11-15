@@ -2,21 +2,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/garmin_device.dart';
 
 class PreferencesService {
-  static const String _selectedDeviceIdKey = 'selected_device_id';
-  static const String _selectedDeviceNameKey = 'selected_device_name';
-  static const String _includePaidKey = 'include_paid';
+  static const String _deviceIdKey = 'device_id';
+  static const String _paidKey = 'paid';
   static const String _excludedPermissionsKey = 'excluded_permissions';
   static const String _selectedOrderByKey = 'selected_order_by';
-  
+
   // Save selected device
-  static Future<void> saveSelectedDevice(GarminDevice? device) async {
+  static Future<void> saveSelectedDevice(int? deviceId) async {
     final prefs = await SharedPreferences.getInstance();
-    if (device != null) {
-      await prefs.setInt(_selectedDeviceIdKey, device.id);
-      await prefs.setString(_selectedDeviceNameKey, device.name);
+    if (deviceId != null) {
+      await prefs.setInt(_deviceIdKey, deviceId);
     } else {
-      await prefs.remove(_selectedDeviceIdKey);
-      await prefs.remove(_selectedDeviceNameKey);
+      await prefs.remove(_deviceIdKey);
     }
   }
 
@@ -25,36 +22,34 @@ class PreferencesService {
     final prefs = await SharedPreferences.getInstance();
     final orderBy = prefs.getString(_selectedOrderByKey);
     if (orderBy != null) {
-       try {
+      try {
         return orderByOptions.firstWhere((option) => option == orderBy);
       } catch (e) {
         // orderBy not found in current list, return null
         return null;
       }
     }
-    
+
     return null;
   }
 
   // Save selected order by
-  static Future<void> saveSelectedOrderBy(String orderBy) async {
+  static Future<void> saveSelectedOrderBy(String? orderBy) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_selectedOrderByKey, orderBy);
+    if (orderBy == null)
+      await prefs.remove(_selectedOrderByKey);
+    else
+      await prefs.setString(_selectedOrderByKey, orderBy);
   }
-
 
   // Load selected device
   static Future<GarminDevice?> loadSelectedDevice(List<GarminDevice> devices) async {
     final prefs = await SharedPreferences.getInstance();
-    final deviceId = prefs.getInt(_selectedDeviceIdKey);
-    final deviceName = prefs.getString(_selectedDeviceNameKey);
-    
-    if (deviceId != null && deviceName != null) {
-      // Try to find the device in the current list
+    var deviceId = prefs.getInt(_deviceIdKey);
+    if (deviceId != null) {
       try {
-        return devices.firstWhere((device) => device.id == deviceId && device.name == deviceName);
+        return devices.firstWhere((device) => device.id == deviceId);
       } catch (e) {
-        // Device not found in current list, return null
         return null;
       }
     }
@@ -62,15 +57,18 @@ class PreferencesService {
   }
 
   // Save include paid preference
-  static Future<void> saveIncludePaid(bool includePaid) async {
+  static Future<void> savePaid(bool? paid) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_includePaidKey, includePaid);
+    if (paid == null)
+      await prefs.remove(_paidKey);
+    else
+      await prefs.setBool(_paidKey, paid == true);
   }
 
   // Load include paid preference
-  static Future<bool> loadIncludePaid() async {
+  static Future<bool> loadPaid() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_includePaidKey) ?? false; // Default to false
+    return prefs.getBool(_paidKey) ?? false; // Default to false
   }
 
   // Save excluded permissions
@@ -88,9 +86,8 @@ class PreferencesService {
   // Clear all preferences
   static Future<void> clearAllPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_selectedDeviceIdKey);
-    await prefs.remove(_selectedDeviceNameKey);
-    await prefs.remove(_includePaidKey);
+    await prefs.remove(_deviceIdKey);
+    await prefs.remove(_paidKey);
     await prefs.remove(_excludedPermissionsKey);
     await prefs.remove(_selectedOrderByKey);
   }
