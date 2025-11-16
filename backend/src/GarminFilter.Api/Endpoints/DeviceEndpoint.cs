@@ -24,7 +24,7 @@ public class DeviceEndpoint : IEndpoint
 
 		builder.MapPost("/{deviceId}/watchface", async (DeviceId deviceId, AppQueryModel model, IMediator mediator, CancellationToken cancellationToken) =>
 		{
-			var watchfaces = await mediator.Send(new AppQuery(deviceId, AppTypes.WatchFace, model.Paid, model.ExcludePermissions, model.PageIndex, model.PageSize, model.OrderBy),
+			var watchfaces = await mediator.Send(new AppQuery(deviceId, AppTypes.WatchFace, model.Paid, model.Developer, model.ExcludePermissions, model.PageIndex, model.PageSize, model.OrderBy),
 				cancellationToken);
 
 			return watchfaces

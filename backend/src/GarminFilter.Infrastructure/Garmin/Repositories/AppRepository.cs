@@ -42,7 +42,7 @@ internal class AppRepository : BaseAggregateRepository<AppAggregate, AppId>, IAp
 		return _collection.FindById(id.PrimitiveValue);
 	}
 
-	public IEnumerable<AppAggregate> Query(DeviceId deviceId, AppType type, bool? paid, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize, AppOrder orderBy)
+	public IEnumerable<AppAggregate> Query(DeviceId deviceId, AppType type, bool? paid, string? developer, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize, AppOrder orderBy)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(pageIndex);
 		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize);
@@ -60,6 +60,11 @@ internal class AppRepository : BaseAggregateRepository<AppAggregate, AppId>, IAp
 		if (paid is not null)
 		{
 			query = query.Where(app => app.IsPaid == paid.Value);
+		}
+
+		if (!string.IsNullOrWhiteSpace(developer))
+		{
+			query = query.Where(app => app.DeveloperName == developer);
 		}
 
 		var orderProperty = GetOrderBy(orderBy);

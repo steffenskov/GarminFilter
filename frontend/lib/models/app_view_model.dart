@@ -24,14 +24,12 @@ class AppViewModel {
     required this.developer,
     required this.averageRating,
     required this.reviewCount,
-    required this.releaseDate
+    required this.releaseDate,
   });
 
   factory AppViewModel.fromJson(Map<String, dynamic> json) {
     return AppViewModel(
-      permissions: json['permissions'] != null 
-          ? (json['permissions'] as List).map((p) => Permission.fromJson(p)).toList()
-          : [],
+      permissions: json['permissions'] != null ? (json['permissions'] as List).map((p) => Permission.fromJson(p)).toList() : [],
       isPaid: json['isPaid'] as bool,
       url: json['url'] as String,
       imageUrl: json['imageUrl'] as String,
@@ -41,7 +39,7 @@ class AppViewModel {
       developer: json['developer'] as String,
       averageRating: (json['averageRating'] as num?)?.toDouble() ?? 0.0,
       reviewCount: json['reviewCount'] as int? ?? 0,
-      releaseDate: json['releaseDate'] as String
+      releaseDate: json['releaseDate'] as String,
     );
   }
 }

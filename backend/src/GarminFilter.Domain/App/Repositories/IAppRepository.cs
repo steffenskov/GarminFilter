@@ -7,7 +7,7 @@ namespace GarminFilter.Domain.App.Repositories;
 
 public interface IAppRepository : IAggregateRepository<AppAggregate, AppId>, IRepositoryWithExists<AppId>
 {
-	IEnumerable<AppAggregate> Query(DeviceId deviceId, AppType type, bool? paid, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize, AppOrder orderBy);
+	IEnumerable<AppAggregate> Query(DeviceId deviceId, AppType type, bool? paid, string? developer, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize, AppOrder orderBy);
 	int GetCount(AppType type);
 	IEnumerable<string> GetDevelopers();
 }

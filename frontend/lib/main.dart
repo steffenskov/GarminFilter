@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:garmin_filter/widgets/developersWidget.dart';
+import 'package:garmin_filter/widgets/devicesWidget.dart';
+import 'package:garmin_filter/widgets/orderByWidget.dart';
+import 'package:garmin_filter/widgets/paidWidget.dart';
+import 'package:garmin_filter/widgets/permissionsWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'models/garmin_device.dart';
-import 'models/app_view_model.dart';
+
 import 'models/app_query_model.dart';
-import 'models/permission.dart';
+import 'models/app_view_model.dart';
+import 'models/garmin_device.dart';
 import 'services/garmin_api_service.dart';
-import 'services/preferences_service.dart';
 
 void main() {
   runApp(const GarminFilterApp());
@@ -32,14 +36,11 @@ class GarminFilterHomePage extends StatefulWidget {
 }
 
 class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
-  List<GarminDevice> _devices = [];
+  String? _selectedDeveloper;
   GarminDevice? _selectedDevice;
   String? _selectedOrderBy;
-  bool _isLoading = false;
-  String? _error;
-
-  bool _isLoadingOrderBy = false;
-  String? _orderByError;
+  bool? _paid;
+  List<String> _selectedExcludePermissions = [];
 
   List<AppViewModel> _watchfaces = [];
   bool _isLoadingWatchfaces = false;
@@ -47,20 +48,10 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
   int _currentPageIndex = 0;
   bool _hasMoreData = true;
   final ScrollController _scrollController = ScrollController();
-  bool? _paid = null;
-  List<Permission> _availablePermissions = [];
-  List<String> _selectedExcludePermissions = [];
-  List<String> _orderByOptions = [];
-  bool _isLoadingPermissions = false;
-  String? _permissionsError;
 
   @override
   void initState() {
     super.initState();
-    _loadDevices();
-    _loadOrderByOptions();
-    _loadPermissions();
-    _loadPreferences();
     _scrollController.addListener(_onScroll);
   }
 
@@ -76,104 +67,12 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
     }
   }
 
-  Future<void> _loadOrderByOptions() async {
-    setState(() {
-      _isLoadingOrderBy = true;
-      _orderByError = null;
-    });
-
-    try {
-      final orderByOptions = await GarminApiService.getOrderByOptions();
-      setState(() {
-        _orderByOptions = orderByOptions;
-        _isLoadingOrderBy = false;
-      });
-
-      // Load selected orderBy after orderBy options are loaded
-      final selectedOrderBy = await PreferencesService.loadSelectedOrderBy(orderByOptions);
-      if (selectedOrderBy != null) {
-        setState(() {
-          _selectedOrderBy = selectedOrderBy;
-        });
-      } else {
-        setState(() {
-          _selectedOrderBy = orderByOptions.first;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _orderByError = e.toString();
-        _isLoadingOrderBy = false;
-      });
-    }
-  }
-
-  Future<void> _loadDevices() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final devices = await GarminApiService.getDevices();
-      setState(() {
-        _devices = devices;
-        _isLoading = false;
-      });
-
-      // Load selected device after devices are loaded
-      final selectedDevice = await PreferencesService.loadSelectedDevice(devices);
-      if (selectedDevice != null) {
-        setState(() {
-          _selectedDevice = selectedDevice;
-        });
-        // Trigger search with saved preferences
-        _searchWatchfaces(selectedDevice, resetPagination: true);
-      }
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _loadPermissions() async {
-    setState(() {
-      _isLoadingPermissions = true;
-      _permissionsError = null;
-    });
-
-    try {
-      final permissions = await GarminApiService.getPermissions();
-      setState(() {
-        _availablePermissions = permissions;
-        _isLoadingPermissions = false;
-      });
-    } catch (e) {
-      setState(() {
-        _permissionsError = e.toString();
-        _isLoadingPermissions = false;
-      });
-    }
-  }
-
-  Future<void> _loadPreferences() async {
-    // Load include paid preference
-    final includePaid = await PreferencesService.loadPaid();
-    setState(() {
-      _paid = includePaid;
-    });
-
-    // Load excluded permissions
-    final excludedPermissions = await PreferencesService.loadExcludedPermissions();
-    setState(() {
-      _selectedExcludePermissions = excludedPermissions;
-    });
-  }
-
-  Future<void> _searchWatchfaces(GarminDevice device, {bool resetPagination = true}) async {
+  Future<void> _searchWatchfaces({bool resetPagination = true}) async {
     if (_selectedOrderBy == null) {
+      return;
+    }
+
+    if (_selectedDevice == null) {
       return;
     }
 
@@ -192,9 +91,9 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
     }
 
     try {
-      final query = AppQueryModel(excludePermissions: _selectedExcludePermissions, paid: _paid, pageIndex: _currentPageIndex, pageSize: 30, orderBy: _selectedOrderBy!);
+      final query = AppQueryModel(excludePermissions: _selectedExcludePermissions, paid: _paid, developer: _selectedDeveloper, pageIndex: _currentPageIndex, pageSize: 30, orderBy: _selectedOrderBy!);
 
-      final watchfaces = await GarminApiService.getWatchfaces(device.id, query);
+      final watchfaces = await GarminApiService.getWatchfaces(_selectedDevice!.id, query);
 
       setState(() {
         if (resetPagination) {
@@ -218,7 +117,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
 
   Future<void> _loadMoreWatchfaces() async {
     if (_selectedDevice != null && _hasMoreData && !_isLoadingWatchfaces) {
-      await _searchWatchfaces(_selectedDevice!, resetPagination: false);
+      await _searchWatchfaces(resetPagination: false);
     }
   }
 
@@ -247,169 +146,52 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                   children: [
                     const Text('Filter options', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
-                    if (_isLoading)
-                      const Center(child: CircularProgressIndicator())
-                    else if (_error != null)
-                      Column(
-                        children: [
-                          Text('Error: $_error', style: TextStyle(color: Colors.red[700])),
-                          const SizedBox(height: 8),
-                          ElevatedButton(onPressed: _loadDevices, child: const Text('Retry')),
-                        ],
-                      )
-                    else
-                      Row(
-                        children: [
-                          SizedBox(width: 150, child: Text("Choose a device")),
-                          Expanded(
-                            child: Autocomplete<GarminDevice>(
-                              optionsBuilder: (TextEditingValue textEditingValue) {
-                                if (textEditingValue.text.isEmpty) {
-                                  return _devices;
-                                }
-                                return _devices.where((device) => device.name.toLowerCase().contains(textEditingValue.text.toLowerCase()));
-                              },
-                              displayStringForOption: (GarminDevice device) => device.name,
-                              onSelected: (GarminDevice device) async {
-                                setState(() {
-                                  _selectedDevice = device;
-                                });
-                                await PreferencesService.saveSelectedDevice(device.id);
-                                _searchWatchfaces(device, resetPagination: true);
-                              },
-                              fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
-                                if (_selectedDevice != null) {
-                                  textEditingController.text = _selectedDevice!.name;
-                                }
-                                return TextFormField(
-                                  controller: textEditingController,
-                                  focusNode: focusNode,
-                                  decoration: InputDecoration(
-                                    labelText: 'Choose a device',
-                                    hintText: 'Type to search devices...',
-                                    border: const OutlineInputBorder(),
-                                    suffixIcon: _selectedDevice != null
-                                        ? IconButton(
-                                            icon: const Icon(Icons.clear),
-                                            onPressed: () async {
-                                              textEditingController.clear();
-                                              setState(() {
-                                                _selectedDevice = null;
-                                              });
-                                              await PreferencesService.saveSelectedDevice(null);
-                                            },
-                                          )
-                                        : null,
-                                  ),
-                                  onChanged: (value) {
-                                    // Clear selection if text doesn't match any device
-                                    if (_selectedDevice != null && _selectedDevice!.name != value) {
-                                      setState(() {
-                                        _selectedDevice = null;
-                                      });
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                    DevicesWidget(
+                      onSelected: (GarminDevice? device) {
+                        setState(() {
+                          _selectedDevice = device;
+                        });
+
+                        _searchWatchfaces(resetPagination: true);
+                      },
+                    ),
                     SizedBox(height: 8),
-                    Row(
-                      children: [
-                        SizedBox(width: 150, child: Text("Pricing model")),
-                        DropdownMenu<bool?>(
-                          dropdownMenuEntries: const [
-                            DropdownMenuEntry(label: "Both free and paid", value: null),
-                            DropdownMenuEntry(label: "Only free", value: false),
-                            DropdownMenuEntry(label: "Only paid", value: true),
-                          ],
-                          initialSelection: _paid,
-                          onSelected: (bool? value) async {
-                            setState(() {
-                              _paid = value;
-                            });
-                            await PreferencesService.savePaid(_paid);
-                            // Reset search when checkbox changes
-                            if (_selectedDevice != null) {
-                              _searchWatchfaces(_selectedDevice!, resetPagination: true);
-                            }
-                          },
-                        ),
-                      ],
+                    DevelopersWidget(
+                      onSelected: (String? value) {
+                        setState(() {
+                          _selectedDeveloper = value;
+                        });
+                        _searchWatchfaces(resetPagination: true);
+                      },
+                    ),
+                    SizedBox(height: 8),
+                    PaidWidget(
+                      onSelected: (bool? value) {
+                        setState(() {
+                          _paid = value;
+                        });
+                        _searchWatchfaces(resetPagination: true);
+                      },
                     ),
                     SizedBox(height: 8),
 
-                    if (_isLoadingPermissions)
-                      const Center(child: CircularProgressIndicator())
-                    else if (_permissionsError != null)
-                      Column(
-                        children: [
-                          Text('Error loading permissions: $_permissionsError', style: TextStyle(color: Colors.red[700])),
-                          const SizedBox(height: 8),
-                          ElevatedButton(onPressed: _loadPermissions, child: const Text('Retry')),
-                        ],
-                      )
-                    else if (_availablePermissions.isEmpty)
-                      const Text('No permissions available')
-                    else
-                      ExpansionTile(
-                        title: Text("Excluded permissions: " + _selectedExcludePermissions.length.toString()),
-                        tilePadding: EdgeInsets.all(0.0),
-                        children: _availablePermissions
-                            .map(
-                              (permission) => CheckboxListTile(
-                                title: Text(permission.description),
-                                value: _selectedExcludePermissions.contains(permission.permission),
-                                onChanged: (bool? value) async {
-                                  setState(() {
-                                    if (value == true) {
-                                      _selectedExcludePermissions.add(permission.permission);
-                                    } else {
-                                      _selectedExcludePermissions.remove(permission.permission);
-                                    }
-                                  });
-                                  await PreferencesService.saveExcludedPermissions(_selectedExcludePermissions);
-                                  // Reset search when permissions change
-                                  if (_selectedDevice != null) {
-                                    _searchWatchfaces(_selectedDevice!, resetPagination: true);
-                                  }
-                                },
-                              ),
-                            )
-                            .toList(),
-                      ),
+                    PermissionsWidget(
+                      onSelected: (value) {
+                        setState(() {
+                          _selectedExcludePermissions = value;
+                        });
+                        _searchWatchfaces(resetPagination: true);
+                      },
+                    ),
                     const SizedBox(height: 8),
-                    if (_isLoadingOrderBy)
-                      const Center(child: CircularProgressIndicator())
-                    else if (_orderByError != null)
-                      Column(
-                        children: [
-                          Text('Error: $_orderByError', style: TextStyle(color: Colors.red[700])),
-                          const SizedBox(height: 8),
-                          ElevatedButton(onPressed: _loadOrderByOptions, child: const Text('Retry')),
-                        ],
-                      )
-                    else
-                      Row(
-                        children: [
-                          SizedBox(width: 150, child: Text("Order by")),
-                          DropdownMenu<String>(
-                            dropdownMenuEntries: _orderByOptions.map((item) => DropdownMenuEntry(label: item, value: item)).toList(),
-                            initialSelection: _selectedOrderBy,
-                            onSelected: (String? value) async {
-                              setState(() {
-                                _selectedOrderBy = value;
-                              });
-                              await PreferencesService.saveSelectedOrderBy(value);
-                              if (_selectedDevice != null) {
-                                _searchWatchfaces(_selectedDevice!, resetPagination: true);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+                    OrderByWidget(
+                      onSelected: (value) {
+                        setState(() {
+                          _selectedOrderBy = value;
+                        });
+                        _searchWatchfaces(resetPagination: true);
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -437,7 +219,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 16),
-                          ElevatedButton(onPressed: () => _searchWatchfaces(_selectedDevice!), child: const Text('Retry')),
+                          ElevatedButton(onPressed: () => _searchWatchfaces(), child: const Text('Retry')),
                         ],
                       ),
                     )
@@ -471,8 +253,8 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                                     borderRadius: BorderRadius.circular(8),
                                     child: Image.network(
                                       GarminApiService.getAbsoluteImageUrl(watchface.imageUrl),
-                                      width: 120,
-                                      height: 120,
+                                      width: 160,
+                                      height: 160,
                                       fit: BoxFit.cover,
                                       errorBuilder: (context, error, stackTrace) {
                                         return Container(width: 120, height: 120, color: Colors.grey[300], child: const Icon(Icons.image_not_supported));
