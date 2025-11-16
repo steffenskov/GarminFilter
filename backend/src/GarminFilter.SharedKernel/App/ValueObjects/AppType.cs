@@ -20,7 +20,7 @@ public class AppType : StrongTypedEnumValue<AppType, AppTypes>
 				return (AppTypes)numericValue;
 			}
 
-			throw new ArgumentException("Invalid input value: {value}", nameof(value));
+			throw new ArgumentException($"Invalid input value: {value}", nameof(value));
 		}
 
 		return Enum.Parse<AppTypes>(value);
