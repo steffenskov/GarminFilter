@@ -257,7 +257,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                                       height: 160,
                                       fit: BoxFit.cover,
                                       errorBuilder: (context, error, stackTrace) {
-                                        return Container(width: 120, height: 120, color: Colors.grey[300], child: const Icon(Icons.image_not_supported));
+                                        return Container(width: 160, height: 160, color: Colors.grey[300], child: const Icon(Icons.image_not_supported));
                                       },
                                     ),
                                   ),

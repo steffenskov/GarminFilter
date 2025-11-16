@@ -38,7 +38,7 @@ class _DevelopersWidgetState extends State<DevelopersWidget> {
         _isLoading = false;
       });
 
-      // Load selected device after devices are loaded
+      // Load selected developer after developers are loaded
       final selectedDeveloper = await PreferencesService.developer.loadAsync(developers);
       if (selectedDeveloper != null) {
         await _setSelectedValueAsync(selectedDeveloper);

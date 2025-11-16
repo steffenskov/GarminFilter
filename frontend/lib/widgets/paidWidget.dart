@@ -22,7 +22,8 @@ class _PaidWidgetState extends State<PaidWidget> {
   }
 
   Future<void> _loadState() async {
-    _selectedValue = await PreferencesService.paid.loadAsync();
+    final state = await PreferencesService.paid.loadAsync();
+    await _setSelectedValueAsync(state);
   }
 
   Future<void> _setSelectedValueAsync(bool? value) async {
