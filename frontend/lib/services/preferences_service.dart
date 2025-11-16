@@ -1,97 +1,124 @@
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/garmin_device.dart';
 
-class PreferencesService {
-  static const String _selectedDeviceIdKey = 'selected_device_id';
-  static const String _selectedDeviceNameKey = 'selected_device_name';
-  static const String _includePaidKey = 'include_paid';
-  static const String _excludedPermissionsKey = 'excluded_permissions';
-  static const String _selectedOrderByKey = 'selected_order_by';
-  
-  // Save selected device
-  static Future<void> saveSelectedDevice(GarminDevice? device) async {
+final class _Device {
+  static const String _deviceIdKey = 'device_id';
+  static const String _deviceNameKey = 'device_name'; // Need both Id and Name, as Garmin have multiple devices with the same underlying Id (e.g. Epix == Quatix)
+
+  Future<void> saveAsync(GarminDevice? device) async {
     final prefs = await SharedPreferences.getInstance();
+
     if (device != null) {
-      await prefs.setInt(_selectedDeviceIdKey, device.id);
-      await prefs.setString(_selectedDeviceNameKey, device.name);
+      await prefs.setInt(_deviceIdKey, device.id);
+      await prefs.setString(_deviceNameKey, device.name);
     } else {
-      await prefs.remove(_selectedDeviceIdKey);
-      await prefs.remove(_selectedDeviceNameKey);
+      await prefs.remove(_deviceIdKey);
+      await prefs.remove(_deviceNameKey);
     }
   }
 
-  // Load selected order by
-  static Future<String?> loadSelectedOrderBy(List<String> orderByOptions) async {
+  Future<GarminDevice?> loadAsync(List<GarminDevice> devices) async {
     final prefs = await SharedPreferences.getInstance();
-    final orderBy = prefs.getString(_selectedOrderByKey);
+
+    var deviceId = prefs.getInt(_deviceIdKey);
+    var deviceName = prefs.getString(_deviceNameKey);
+    if (deviceId != null && deviceName != null) {
+      return devices.where((device) => device.id == deviceId && device.name == deviceName).firstOrNull;
+    }
+    return null;
+  }
+}
+
+final class _Paid {
+  static const String _key = 'paid';
+
+  Future<void> saveAsync(bool? paid) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (paid != null) {
+      await prefs.setBool(_key, paid);
+    } else {
+      await prefs.remove(_key);
+    }
+  }
+
+  Future<bool?> loadAsync() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_key);
+  }
+}
+
+final class _Permissions {
+  static const String _key = 'excluded_permissions';
+
+  Future<void> saveAsync(List<String> excludedPermissions) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_key, excludedPermissions);
+  }
+
+  Future<List<String>> loadAsync() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_key) ?? [];
+  }
+}
+
+final class _OrderBy {
+  static const String _key = 'selected_order_by';
+
+  Future<String?> loadAsync(List<String> orderByOptions) async {
+    final prefs = await SharedPreferences.getInstance();
+    final orderBy = prefs.getString(_key);
     if (orderBy != null) {
-       try {
+      try {
         return orderByOptions.firstWhere((option) => option == orderBy);
       } catch (e) {
-        // orderBy not found in current list, return null
         return null;
       }
     }
-    
+
     return null;
   }
 
-  // Save selected order by
-  static Future<void> saveSelectedOrderBy(String orderBy) async {
+  Future<void> saveAsync(String? orderBy) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_selectedOrderByKey, orderBy);
+    if (orderBy == null) {
+      await prefs.remove(_key);
+    } else {
+      await prefs.setString(_key, orderBy);
+    }
   }
+}
 
+final class _Developer {
+  static const String _key = 'developer';
 
-  // Load selected device
-  static Future<GarminDevice?> loadSelectedDevice(List<GarminDevice> devices) async {
+  Future<String?> loadAsync(List<String> developers) async {
     final prefs = await SharedPreferences.getInstance();
-    final deviceId = prefs.getInt(_selectedDeviceIdKey);
-    final deviceName = prefs.getString(_selectedDeviceNameKey);
-    
-    if (deviceId != null && deviceName != null) {
-      // Try to find the device in the current list
+    var selectedDeveloper = prefs.getString(_key);
+    if (selectedDeveloper != null) {
       try {
-        return devices.firstWhere((device) => device.id == deviceId && device.name == deviceName);
+        return developers.firstWhere((developer) => developer == selectedDeveloper);
       } catch (e) {
-        // Device not found in current list, return null
         return null;
       }
     }
     return null;
   }
 
-  // Save include paid preference
-  static Future<void> saveIncludePaid(bool includePaid) async {
+  Future<void> saveAsync(String? developer) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_includePaidKey, includePaid);
+    if (developer == null) {
+      await prefs.remove(_key);
+    } else {
+      await prefs.setString(_key, developer);
+    }
   }
+}
 
-  // Load include paid preference
-  static Future<bool> loadIncludePaid() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_includePaidKey) ?? false; // Default to false
-  }
-
-  // Save excluded permissions
-  static Future<void> saveExcludedPermissions(List<String> excludedPermissions) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_excludedPermissionsKey, excludedPermissions);
-  }
-
-  // Load excluded permissions
-  static Future<List<String>> loadExcludedPermissions() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(_excludedPermissionsKey) ?? [];
-  }
-
-  // Clear all preferences
-  static Future<void> clearAllPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_selectedDeviceIdKey);
-    await prefs.remove(_selectedDeviceNameKey);
-    await prefs.remove(_includePaidKey);
-    await prefs.remove(_excludedPermissionsKey);
-    await prefs.remove(_selectedOrderByKey);
-  }
+class PreferencesService {
+  static final device = _Device();
+  static final paid = _Paid();
+  static final permissions = _Permissions();
+  static final orderBy = _OrderBy();
+  static final developer = _Developer();
 }

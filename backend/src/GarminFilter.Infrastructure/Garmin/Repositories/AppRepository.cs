@@ -11,6 +11,7 @@ internal class AppRepository : BaseAggregateRepository<AppAggregate, AppId>, IAp
 	public AppRepository(LiteDatabase db) : base(db, "apps")
 	{
 		_collection.EnsureIndex(app => app.Type);
+		_collection.EnsureIndex(app => app.DeveloperName);
 	}
 
 	public bool Exists(AppId id)
@@ -23,12 +24,25 @@ internal class AppRepository : BaseAggregateRepository<AppAggregate, AppId>, IAp
 		return _collection.Count(aggregate => aggregate.Type == type.PrimitiveValue);
 	}
 
+	public IEnumerable<string> GetDevelopers()
+	{
+		var query = _collection
+			.Query()
+			.GroupBy(nameof(AppAggregate.DeveloperName))
+			.Select("@key");
+
+		return query
+			.ToEnumerable()
+			.Select(bson => bson["expr"].ToString().Trim('"'))
+			.OrderBy(val => val);
+	}
+
 	public override AppAggregate? GetSingle(AppId id)
 	{
 		return _collection.FindById(id.PrimitiveValue);
 	}
 
-	public IEnumerable<AppAggregate> Query(DeviceId deviceId, AppType type, bool includePaid, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize, AppOrder orderBy)
+	public IEnumerable<AppAggregate> Query(DeviceId deviceId, AppType type, bool? paid, string? developer, ISet<AppPermission> excludePermissions, int pageIndex, int pageSize, AppOrder orderBy)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(pageIndex);
 		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize);
@@ -43,9 +57,14 @@ internal class AppRepository : BaseAggregateRepository<AppAggregate, AppId>, IAp
 			query = query.Where(app => !app.RequiredPermissions.Contains(permission));
 		}
 
-		if (!includePaid)
+		if (paid is not null)
 		{
-			query = query.Where(app => app.IsPaid == false);
+			query = query.Where(app => app.IsPaid == paid.Value);
+		}
+
+		if (!string.IsNullOrWhiteSpace(developer))
+		{
+			query = query.Where(app => app.DeveloperName == developer);
 		}
 
 		var orderProperty = GetOrderBy(orderBy);
