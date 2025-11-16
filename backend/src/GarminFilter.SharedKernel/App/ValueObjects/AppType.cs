@@ -40,7 +40,8 @@ public class AppType : StrongTypedEnumValue<AppType, AppTypes>
 public enum AppTypes
 {
 	WatchFace = 1,
-	DataField = 2,
-	Music = 3,
-	DeviceApp = 4
+	DeviceApp = 2,
+	Widget = 3,
+	DataField = 4,
+	Music = 5
 }

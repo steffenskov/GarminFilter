@@ -53,8 +53,9 @@ internal class GarminClient : IGarminClient
 		{
 			AppTypes.DataField => "datafield",
 			AppTypes.DeviceApp => "watch-app",
-			AppTypes.Music => "audio-content-provider-app",
+			AppTypes.Widget => "widget",
 			AppTypes.WatchFace => "watchface",
+			AppTypes.Music => "audio-content-provider-app",
 			_ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
 		};
 	}

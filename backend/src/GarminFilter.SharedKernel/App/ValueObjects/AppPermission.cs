@@ -35,11 +35,26 @@ public enum AppPermissions
 	[Description("Send/receive information to/from the Internet")]
 	Communications,
 
+	[Description("Broadcast data for watch faces to subscribe to")]
+	ComplicationPublisher,
+
 	[Description("Read and display data from other apps.")]
 	ComplicationSubscriber,
 
+	[Description("FIT files (activity recordings)")]
+	Fit,
+
+	[Description("Record high resolution sensor data to a FIT file (may dramatically increase activity file size)")]
+	FitContributor,
+
 	[Description("Display notifications when running in the foreground or background.")]
 	Notifications,
+
+	[Description("Saved information such as courses, routes, waypoints, tracks or workouts")]
+	PersistedContent,
+
+	[Description("Write locations to a device’s location list")]
+	PersistedLocations,
 
 	[Description("GPS location")] Positioning,
 
@@ -48,6 +63,9 @@ public enum AppPermissions
 
 	[Description("Sensor data (i.e., ANT+, heart rate, compass)")]
 	Sensor,
+
+	[Description("Record additional information into activity files")]
+	SensorLogging,
 
 	[Description("Heart rate, barometer, temperature, and altitude history")]
 	SensorHistory,

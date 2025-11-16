@@ -22,10 +22,10 @@ public class SyncStateGetSingleQueryTests : BaseTests
 		// Arrange
 		var state = new SyncState
 		{
-			Id = AppTypes.Music
+			Id = AppTypes.Widget
 		};
 		_repository.Upsert(state);
-		var query = new SyncStateGetSingleQuery(AppTypes.Music);
+		var query = new SyncStateGetSingleQuery(AppTypes.Widget);
 
 		// Act
 		var result = await _mediator.Send(query);

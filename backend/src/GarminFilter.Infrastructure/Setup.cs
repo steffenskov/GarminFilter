@@ -30,6 +30,10 @@ public static class Setup
 
 		services.AddTransient<ISynchronizerFacade, DeviceSynchronizerFacade>();
 		services.AddTransient<ISynchronizerFacade, WatchFaceSynchronizerFacade>();
+		services.AddTransient<ISynchronizerFacade, DeviceAppSynchronizerFacade>();
+		services.AddTransient<ISynchronizerFacade, WidgetSynchronizerFacade>();
+		services.AddTransient<ISynchronizerFacade, DataFieldSynchronizerFacade>();
+		services.AddTransient<ISynchronizerFacade, MusicSynchronizerFacade>();
 		services.AddSingleton(CreateJsonSerializerOptions());
 
 		services.AddGarminClient();

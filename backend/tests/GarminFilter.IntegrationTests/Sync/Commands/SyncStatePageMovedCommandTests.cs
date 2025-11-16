@@ -20,7 +20,7 @@ public class SyncStatePageMovedCommandTests : BaseTests
 	public async Task SyncStatePageMovedCommand_DoesNotExist_IsCreated()
 	{
 		// Arrange
-		var command = new SyncStatePageMovedCommand(AppTypes.Music, 20);
+		var command = new SyncStatePageMovedCommand(AppTypes.Widget, 20);
 
 		// Act
 		var result = await _mediator.Send(command);
