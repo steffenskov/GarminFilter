@@ -20,7 +20,7 @@ public class AppType : StrongTypedEnumValue<AppType, AppTypes>
 				return (AppTypes)numericValue;
 			}
 
-			throw new ArgumentException("Invalid input value: {value}", nameof(value));
+			throw new ArgumentException($"Invalid input value: {value}", nameof(value));
 		}
 
 		return Enum.Parse<AppTypes>(value);
@@ -40,7 +40,8 @@ public class AppType : StrongTypedEnumValue<AppType, AppTypes>
 public enum AppTypes
 {
 	WatchFace = 1,
-	DataField = 2,
-	Music = 3,
-	DeviceApp = 4
+	DeviceApp = 2,
+	Widget = 3,
+	DataField = 4,
+	Music = 5
 }
