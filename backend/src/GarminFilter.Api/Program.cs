@@ -36,10 +36,13 @@ var app = builder.Build();
 
 app.UseCors();
 app.MapOpenApi();
-app.UseSwaggerUi(options =>
+if (app.Environment.IsDevelopment())
 {
-	options.DocumentPath = "openapi/v1.json";
-});
+	app.UseSwaggerUi(options =>
+	{
+		options.DocumentPath = "openapi/v1.json";
+	});
+}
 
 app.UseHttpsRedirection();
 
