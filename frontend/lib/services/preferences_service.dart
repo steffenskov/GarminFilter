@@ -24,11 +24,7 @@ final class _Device {
     var deviceId = prefs.getInt(_deviceIdKey);
     var deviceName = prefs.getString(_deviceNameKey);
     if (deviceId != null && deviceName != null) {
-      try {
-        return devices.firstWhere((device) => device.id == deviceId && device.name == deviceName);
-      } catch (e) {
-        return null;
-      }
+      return devices.where((device) => device.id == deviceId && device.name == deviceName).firstOrNull;
     }
     return null;
   }

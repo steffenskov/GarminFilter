@@ -70,7 +70,7 @@ class _PermissionsWidgetState extends State<PermissionsWidget> {
         else
           ExpansionTile(
             title: Text("Excluded permissions: ${_selectedValue.length}"),
-            tilePadding: EdgeInsets.all(0.0),
+            tilePadding: EdgeInsets.zero,
             children: _availablePermissions
                 .map(
                   (permission) => CheckboxListTile(

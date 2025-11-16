@@ -155,7 +155,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                         _searchWatchfaces(resetPagination: true);
                       },
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     DevelopersWidget(
                       onSelected: (String? value) {
                         setState(() {
@@ -164,7 +164,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                         _searchWatchfaces(resetPagination: true);
                       },
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     PaidWidget(
                       onSelected: (bool? value) {
                         setState(() {
@@ -173,8 +173,7 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                         _searchWatchfaces(resetPagination: true);
                       },
                     ),
-                    SizedBox(height: 8),
-
+                    const SizedBox(height: 8),
                     PermissionsWidget(
                       onSelected: (value) {
                         setState(() {

@@ -87,7 +87,7 @@ class _DevelopersWidgetState extends State<DevelopersWidget> {
                     return _developers.where((developer) => developer.toLowerCase().contains(textEditingValue.text.toLowerCase()));
                   },
                   onSelected: (String? value) async {
-                    await this._setSelectedValueAsync(value);
+                    await _setSelectedValueAsync(value);
                   },
                   fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
                     if (_selectedValue != null) {
