@@ -23,6 +23,12 @@ public class AppPermission : StrongTypedEnumValue<AppPermission, AppPermissions>
 
 public enum AppPermissions
 {
+	[Description("Start routes or workouts")]
+	ActivityControl,
+
+	[Description("Manage activity audio prompts")]
+	ActivityPrompts,
+
 	[Description("Send/receive data via ANT radio to/from third-party sensors")]
 	Ant,
 
@@ -40,6 +46,9 @@ public enum AppPermissions
 
 	[Description("Read and display data from other apps.")]
 	ComplicationSubscriber,
+
+	[Description("Send you on-device alerts")]
+	DataFieldAlert,
 
 	[Description("FIT files (activity recordings)")]
 	Fit,
