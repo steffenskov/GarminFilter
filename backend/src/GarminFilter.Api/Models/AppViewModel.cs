@@ -19,9 +19,12 @@ public class AppViewModel
 			.ToList();
 		Developer = app.DeveloperName;
 		AverageRating = app.AverageRating;
+		WeightedAverageRating = app.WeightedAverageRating;
 		ReviewCount = app.ReviewCount;
 		ReleaseDate = DateTime.UnixEpoch.AddMilliseconds(app.ReleaseDate).ToString("MMM dd, yyyy");
 	}
+
+	public decimal WeightedAverageRating { get; }
 
 	public string ReleaseDate { get; }
 

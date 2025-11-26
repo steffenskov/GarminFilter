@@ -10,6 +10,7 @@ class AppViewModel {
   final String name;
   final String developer;
   final double averageRating;
+  final double weightedAverageRating;
   final int reviewCount;
   final String releaseDate;
 
@@ -23,6 +24,7 @@ class AppViewModel {
     required this.name,
     required this.developer,
     required this.averageRating,
+    required this.weightedAverageRating,
     required this.reviewCount,
     required this.releaseDate,
   });
@@ -38,6 +40,7 @@ class AppViewModel {
       name: json['name'] as String,
       developer: json['developer'] as String,
       averageRating: (json['averageRating'] as num?)?.toDouble() ?? 0.0,
+      weightedAverageRating: (json['weightedAverageRating'] as num?)?.toDouble() ?? 0.0,
       reviewCount: json['reviewCount'] as int? ?? 0,
       releaseDate: json['releaseDate'] as String,
     );
