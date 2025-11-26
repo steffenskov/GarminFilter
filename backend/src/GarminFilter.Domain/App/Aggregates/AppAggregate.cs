@@ -1,3 +1,4 @@
+using GarminFilter.Domain.App.Services;
 using GarminFilter.SharedKernel.App.Entities;
 using GarminFilter.SharedKernel.App.ValueObjects;
 using GarminFilter.SharedKernel.Device.ValueObjects;
@@ -21,6 +22,8 @@ public record AppAggregate : IAggregate<AppId>
 	public decimal AverageRating { get; private init; }
 	public uint ReviewCount { get; private init; }
 
+	public decimal WeightedAverageRating { get; private init; }
+
 	public AppId Id { get; private init; } = default!;
 
 	public static AppAggregate FromGarmin(IGarminApp garminApp)
@@ -38,7 +41,8 @@ public record AppAggregate : IAggregate<AppId>
 			IsPaid = garminApp.Pricing is not null || garminApp.PaymentModel == GarminPaymentModel.ThirdPartyPayment,
 			AverageRating = garminApp.AverageRating,
 			ReviewCount = garminApp.ReviewCount,
-			RatingSortKey = (ulong)(garminApp.AverageRating * 10) * 10000000000UL + garminApp.ReviewCount // Average rating is a decimal with a single digit (e.g. 4.2)
+			RatingSortKey = (ulong)(garminApp.AverageRating * 10) * 10000000000UL + garminApp.ReviewCount, // Average rating is a decimal with a single digit (e.g. 4.2)
+			WeightedAverageRating = WilsonScoreCalculator.Calculate(garminApp.AverageRating, garminApp.ReviewCount)
 		};
 	}
 }
