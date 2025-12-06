@@ -50,9 +50,9 @@ public record SyncState : IAggregate<AppType>
 
 public static class SyncStateExtensions
 {
-	public static bool ShouldRenewFullSync(this SyncState state)
+	public static bool ShouldRenewFullSync(this SyncState state, TimeProvider timeProvider)
 	{
-		var today = DateOnly.FromDateTime(DateTime.UtcNow);
+		var today = timeProvider.GetUtcNowDate();
 
 		return state.InitialSyncCompleted
 		       && (state.LastFullSync is null || today.DayNumber - state.LastFullSync.Value.DayNumber >= 7);

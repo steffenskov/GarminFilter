@@ -21,4 +21,14 @@ public static class Extensions
 			? ((DescriptionAttribute)attrs[0]).Description
 			: e.ToString();
 	}
+
+	public static DateOnly GetUtcNowDate(this TimeProvider provider)
+	{
+		return DateOnly.FromDateTime(provider.GetUtcNow().Date);
+	}
+
+	public static DateOnly GetUtcNowDate(this TimeProvider provider, int daysOffset)
+	{
+		return DateOnly.FromDateTime(provider.GetUtcNow().AddDays(daysOffset).Date);
+	}
 }

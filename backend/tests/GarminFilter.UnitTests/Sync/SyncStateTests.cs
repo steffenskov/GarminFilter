@@ -17,14 +17,15 @@ public class SyncStateTests
 		};
 
 		// Act
-		var shouldRenew = syncState.ShouldRenewFullSync();
+		var shouldRenew = syncState.ShouldRenewFullSync(TimeProvider.System);
 
 		// Assert
 		Assert.False(shouldRenew);
 	}
 
 	/// <summary>
-	/// This only happens when upgrading an existing DB, otherwise this state cannot occur - still better safe than sorry, so we're testing
+	///     This only happens when upgrading an existing DB, otherwise this state cannot occur - still better safe than sorry,
+	///     so we're testing
 	/// </summary>
 	[Fact]
 	public void ShouldRenewFullSync_CompletedWithoutDate_ReturnsTrue()
@@ -39,12 +40,12 @@ public class SyncStateTests
 		accessor.Properties[nameof(SyncState.InitialSyncCompleted)].SetValue(true);
 
 		// Act
-		var shouldRenew = syncState.ShouldRenewFullSync();
+		var shouldRenew = syncState.ShouldRenewFullSync(TimeProvider.System);
 
 		// Assert
 		Assert.True(shouldRenew);
 	}
-	
+
 	[Fact]
 	public void ShouldRenewFullSync_CompletedWithRecentDate_ReturnsFalse()
 	{
@@ -52,15 +53,15 @@ public class SyncStateTests
 		var syncState = new SyncState
 		{
 			Id = AppTypes.WatchFace
-		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace));
+		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace, TimeProvider.System.GetUtcNowDate()));
 
 		// Act
-		var shouldRenew = syncState.ShouldRenewFullSync();
+		var shouldRenew = syncState.ShouldRenewFullSync(TimeProvider.System);
 
 		// Assert
 		Assert.False(shouldRenew);
 	}
-	
+
 	[Theory]
 	[InlineData(5, false)]
 	[InlineData(6, false)]
@@ -72,13 +73,10 @@ public class SyncStateTests
 		var syncState = new SyncState
 		{
 			Id = AppTypes.WatchFace
-		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace));
+		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace, TimeProvider.System.GetUtcNowDate(-days)));
 
-		var accessor = new ObjectAccessor(syncState);
-		accessor.Properties[nameof(SyncState.LastFullSync)].SetValue(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-days)));
-		
 		// Act
-		var shouldRenew = syncState.ShouldRenewFullSync();
+		var shouldRenew = syncState.ShouldRenewFullSync(TimeProvider.System);
 
 		// Assert
 		Assert.Equal(expectedShouldRenew, shouldRenew);

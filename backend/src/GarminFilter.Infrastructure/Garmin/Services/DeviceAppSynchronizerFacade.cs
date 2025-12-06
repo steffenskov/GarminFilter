@@ -7,8 +7,9 @@ namespace GarminFilter.Infrastructure.Garmin.Services;
 
 internal class DeviceAppSynchronizerFacade : BaseAppSynchronizerFacade<DeviceAppSynchronizerFacade>
 {
-	public DeviceAppSynchronizerFacade(IGarminClient client, IMediator mediator, IDelayPolicy delayPolicy, ILogger<DeviceAppSynchronizerFacade>? logger = null) : base(client, mediator,
-		AppTypes.DeviceApp, delayPolicy, logger)
+	public DeviceAppSynchronizerFacade(IGarminClient client, IMediator mediator, IDelayPolicy delayPolicy, TimeProvider timeProvider, ILogger<DeviceAppSynchronizerFacade>? logger = null) : base(
+		client, mediator,
+		AppTypes.DeviceApp, delayPolicy, timeProvider, logger)
 	{
 	}
 }

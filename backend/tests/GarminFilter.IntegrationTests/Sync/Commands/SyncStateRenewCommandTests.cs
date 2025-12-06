@@ -36,7 +36,7 @@ public class SyncStateRenewCommandTests : BaseTests
 		_repository.Upsert(new SyncState
 		{
 			Id = AppTypes.WatchFace
-		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace)));
+		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace,TimeProvider.System.GetUtcNowDate())));
 
 		var command = new SyncStateRenewCommand(AppTypes.WatchFace);
 		// Act

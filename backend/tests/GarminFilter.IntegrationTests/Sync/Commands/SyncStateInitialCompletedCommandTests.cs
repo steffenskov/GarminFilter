@@ -20,7 +20,7 @@ public class SyncStateInitialCompletedCommandTests : BaseTests
 	public async Task SyncStateInitialCompletedCommand_DoesNotExist_IsCreated()
 	{
 		// Arrange
-		var command = new SyncStateInitialCompletedCommand(AppTypes.DataField);
+		var command = new SyncStateInitialCompletedCommand(AppTypes.DataField, DateOnly.MinValue);
 
 		// Act
 		var result = await _mediator.Send(command);
@@ -40,7 +40,7 @@ public class SyncStateInitialCompletedCommandTests : BaseTests
 		{
 			Id = AppTypes.WatchFace
 		});
-		var command = new SyncStateInitialCompletedCommand(AppTypes.WatchFace);
+		var command = new SyncStateInitialCompletedCommand(AppTypes.WatchFace, DateOnly.MinValue);
 
 		// Act
 		var result = await _mediator.Send(command);

@@ -4,10 +4,7 @@ using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.Domain.Sync.Commands;
 
-public record SyncStateInitialCompletedCommand(AppType Type) : IRequest<SyncState>
-{
-	public DateOnly CompletedAt { get; } = DateOnly.FromDateTime(DateTime.UtcNow);
-}
+public record SyncStateInitialCompletedCommand(AppType Type, DateOnly CompletedAt) : IRequest<SyncState>;
 
 file sealed class Handler : IRequestHandler<SyncStateInitialCompletedCommand, SyncState>
 {

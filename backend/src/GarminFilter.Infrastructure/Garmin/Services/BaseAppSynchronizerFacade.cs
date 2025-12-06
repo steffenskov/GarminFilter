@@ -7,6 +7,7 @@ using GarminFilter.Domain.Services;
 using GarminFilter.Domain.Sync.Aggregates;
 using GarminFilter.Domain.Sync.Commands;
 using GarminFilter.Domain.Sync.Queries;
+using GarminFilter.SharedKernel;
 using GarminFilter.SharedKernel.App.ValueObjects;
 using Microsoft.Extensions.Logging;
 
@@ -20,21 +21,23 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 	private readonly IDelayPolicy _delayPolicy;
 	private readonly ILogger<TSelf>? _logger;
 	private readonly IMediator _mediator;
+	private readonly TimeProvider _timeProvider;
 
-	protected BaseAppSynchronizerFacade(IGarminClient client, IMediator mediator, AppType appType, IDelayPolicy delayPolicy, ILogger<TSelf>? logger = null)
+	protected BaseAppSynchronizerFacade(IGarminClient client, IMediator mediator, AppType appType, IDelayPolicy delayPolicy, TimeProvider timeProvider, ILogger<TSelf>? logger = null)
 	{
 		_client = client;
 		_mediator = mediator;
 		_appType = appType;
 		_delayPolicy = delayPolicy;
 		_logger = logger;
+		_timeProvider = timeProvider;
 	}
 
 	public async Task SynchronizeAsync(CancellationToken cancellationToken = default)
 	{
 		var state = await _mediator.Send(new SyncStateGetSingleQuery(_appType), cancellationToken);
 
-		if (state?.ShouldRenewFullSync() == true)
+		if (state?.ShouldRenewFullSync(_timeProvider) == true)
 		{
 			state = await _mediator.Send(new SyncStateRenewCommand(_appType), cancellationToken);
 		}
@@ -94,7 +97,7 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 			var apps = await _client.GetAppsAsync(pageIndex, _appType, cancellationToken);
 			if (apps.Count == 0)
 			{
-				await _mediator.Send(new SyncStateInitialCompletedCommand(_appType), cancellationToken);
+				await _mediator.Send(new SyncStateInitialCompletedCommand(_appType, _timeProvider.GetUtcNowDate()), cancellationToken);
 				return;
 			}
 

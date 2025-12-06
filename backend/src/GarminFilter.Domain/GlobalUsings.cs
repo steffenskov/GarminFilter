@@ -3,5 +3,6 @@
 global using System.Collections.Immutable;
 global using FreeMediator;
 global using GarminFilter.Domain.Shared.Aggregates;
+global using GarminFilter.SharedKernel;
 global using StrongTypedId;
 global using StrongTypedId.Converters;

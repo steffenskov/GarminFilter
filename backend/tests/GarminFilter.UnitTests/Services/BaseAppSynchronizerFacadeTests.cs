@@ -9,7 +9,6 @@ using GarminFilter.Domain.Sync.Queries;
 using GarminFilter.Infrastructure.Garmin.Policies;
 using GarminFilter.Infrastructure.Garmin.Services;
 using GarminFilter.SharedKernel.App.ValueObjects;
-using PerformantReflection;
 
 namespace GarminFilter.UnitTests.Services;
 
@@ -19,13 +18,12 @@ public class BaseAppSynchronizerFacadeTests
 	public async Task SynchronizeAsync_StateRequiresRenew_IssuesRenewal()
 	{
 		// Arrange
+		var timeProvider = new FakeTimeProvider();
 		var syncState = new SyncState
 		{
 			Id = AppTypes.WatchFace
-		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace));
-		var accessor = new ObjectAccessor(syncState);
-		accessor.Properties[nameof(SyncState.LastFullSync)].SetValue(DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-1)));
-		
+		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace, TimeProvider.System.GetUtcNowDate()));
+
 		SyncStateRenewCommand? renewCommand = null;
 		var client = Substitute.For<IGarminClient>();
 		client.GetAppsAsync(Arg.Any<int>(), Arg.Any<AppType>(), Arg.Any<CancellationToken>()).Returns([]);
@@ -35,7 +33,7 @@ public class BaseAppSynchronizerFacadeTests
 		mediator.When(mock => mock.Send(Arg.Any<SyncStateRenewCommand>(), Arg.Any<CancellationToken>()))
 			.Do(callInfo => renewCommand = callInfo.Arg<SyncStateRenewCommand>());
 
-		var synchronizer = new FakeAppSynchronizerFacade(client, mediator);
+		var synchronizer = new FakeAppSynchronizerFacade(client, mediator, timeProvider);
 
 		// Act
 		await synchronizer.SynchronizeAsync();
@@ -43,7 +41,7 @@ public class BaseAppSynchronizerFacadeTests
 		// Assert
 		Assert.NotNull(renewCommand);
 	}
-	
+
 	[Fact]
 	public async Task SynchronizeAsync_NoData_DoesNothing()
 	{
@@ -56,7 +54,7 @@ public class BaseAppSynchronizerFacadeTests
 		mediator.When(mock => mock.Send(Arg.Any<AppUpsertCommand>(), Arg.Any<CancellationToken>()))
 			.Do(callInfo => upsertCommand = callInfo.Arg<AppUpsertCommand>());
 
-		var synchronizer = new FakeAppSynchronizerFacade(client, mediator);
+		var synchronizer = new FakeAppSynchronizerFacade(client, mediator, TimeProvider.System);
 
 		// Act
 		await synchronizer.SynchronizeAsync();
@@ -88,7 +86,7 @@ public class BaseAppSynchronizerFacadeTests
 		mediator.When(mock => mock.Send(Arg.Any<AppUpsertCommand>(), Arg.Any<CancellationToken>()))
 			.Do(callInfo => upsertCommands.Add(callInfo.Arg<AppUpsertCommand>()));
 
-		var synchronizer = new FakeAppSynchronizerFacade(client, mediator);
+		var synchronizer = new FakeAppSynchronizerFacade(client, mediator, TimeProvider.System);
 
 		// Act
 		await synchronizer.SynchronizeAsync();
@@ -125,7 +123,7 @@ public class BaseAppSynchronizerFacadeTests
 
 		var mediator = Substitute.For<IMediator>();
 
-		var synchronizer = new FakeAppSynchronizerFacade(client, mediator);
+		var synchronizer = new FakeAppSynchronizerFacade(client, mediator, TimeProvider.System);
 
 		// Act
 		await synchronizer.SynchronizeAsync();
@@ -136,9 +134,17 @@ public class BaseAppSynchronizerFacadeTests
 	}
 }
 
+public class FakeTimeProvider : TimeProvider
+{
+	public override DateTimeOffset GetUtcNow()
+	{
+		return base.GetUtcNow().AddYears(1);
+	}
+}
+
 file class FakeAppSynchronizerFacade : BaseAppSynchronizerFacade<FakeAppSynchronizerFacade>
 {
-	public FakeAppSynchronizerFacade(IGarminClient client, IMediator mediator) : base(client, mediator, AppTypes.WatchFace, new NoDelayPolicy())
+	public FakeAppSynchronizerFacade(IGarminClient client, IMediator mediator, TimeProvider timeProvider) : base(client, mediator, AppTypes.WatchFace, new NoDelayPolicy(), timeProvider)
 	{
 	}
 }

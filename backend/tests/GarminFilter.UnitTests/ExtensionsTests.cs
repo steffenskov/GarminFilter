@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using GarminFilter.SharedKernel;
 
 namespace GarminFilter.UnitTests;
 
