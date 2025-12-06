@@ -4,12 +4,9 @@ using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.Domain.Sync.Commands;
 
-public record SyncStateInitialCompletedCommand(AppType Type) : IRequest<SyncState>
-{
-	public DateOnly CompletedAt { get; } = DateOnly.FromDateTime(DateTime.UtcNow);
-}
+public record SyncStateRenewCommand(AppType Type) : IRequest<SyncState>;
 
-file sealed class Handler : IRequestHandler<SyncStateInitialCompletedCommand, SyncState>
+file sealed class Handler : IRequestHandler<SyncStateRenewCommand, SyncState>
 {
 	private readonly ISyncStateRepository _repository;
 
@@ -18,12 +15,9 @@ file sealed class Handler : IRequestHandler<SyncStateInitialCompletedCommand, Sy
 		_repository = repository;
 	}
 
-	public Task<SyncState> Handle(SyncStateInitialCompletedCommand request, CancellationToken cancellationToken)
+	public Task<SyncState> Handle(SyncStateRenewCommand request, CancellationToken cancellationToken)
 	{
-		var state = _repository.GetSingle(request.Type) ?? new SyncState
-		{
-			Id = request.Type
-		};
+		var state = _repository.GetSingle(request.Type) ?? throw new ArgumentOutOfRangeException(nameof(request.Type), $"SyncState not found: {request.Type}");
 
 		var mutatedState = state.With(request);
 

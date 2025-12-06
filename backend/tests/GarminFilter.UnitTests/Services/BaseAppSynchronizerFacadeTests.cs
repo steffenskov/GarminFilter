@@ -3,14 +3,47 @@ using GarminFilter.Client;
 using GarminFilter.Client.Entities;
 using GarminFilter.Client.Services;
 using GarminFilter.Domain.App.Commands;
+using GarminFilter.Domain.Sync.Aggregates;
+using GarminFilter.Domain.Sync.Commands;
+using GarminFilter.Domain.Sync.Queries;
 using GarminFilter.Infrastructure.Garmin.Policies;
 using GarminFilter.Infrastructure.Garmin.Services;
 using GarminFilter.SharedKernel.App.ValueObjects;
+using PerformantReflection;
 
 namespace GarminFilter.UnitTests.Services;
 
 public class BaseAppSynchronizerFacadeTests
 {
+	[Fact]
+	public async Task SynchronizeAsync_StateRequiresRenew_IssuesRenewal()
+	{
+		// Arrange
+		var syncState = new SyncState
+		{
+			Id = AppTypes.WatchFace
+		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace));
+		var accessor = new ObjectAccessor(syncState);
+		accessor.Properties[nameof(SyncState.LastFullSync)].SetValue(DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-1)));
+		
+		SyncStateRenewCommand? renewCommand = null;
+		var client = Substitute.For<IGarminClient>();
+		client.GetAppsAsync(Arg.Any<int>(), Arg.Any<AppType>(), Arg.Any<CancellationToken>()).Returns([]);
+
+		var mediator = Substitute.For<IMediator>();
+		mediator.Send(Arg.Any<SyncStateGetSingleQuery>(), Arg.Any<CancellationToken>()).Returns(syncState);
+		mediator.When(mock => mock.Send(Arg.Any<SyncStateRenewCommand>(), Arg.Any<CancellationToken>()))
+			.Do(callInfo => renewCommand = callInfo.Arg<SyncStateRenewCommand>());
+
+		var synchronizer = new FakeAppSynchronizerFacade(client, mediator);
+
+		// Act
+		await synchronizer.SynchronizeAsync();
+
+		// Assert
+		Assert.NotNull(renewCommand);
+	}
+	
 	[Fact]
 	public async Task SynchronizeAsync_NoData_DoesNothing()
 	{

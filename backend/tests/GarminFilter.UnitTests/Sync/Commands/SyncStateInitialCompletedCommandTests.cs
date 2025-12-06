@@ -33,9 +33,10 @@ public class SyncStateInitialCompletedCommandTests
 		var aggregate = new SyncState
 		{
 			Id = AppTypes.WatchFace
-		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace));
+		};
 
 		var command = new SyncStateInitialCompletedCommand(AppTypes.WatchFace);
+		aggregate = aggregate.With(command);
 
 		// Act
 		var result = aggregate.With(command);

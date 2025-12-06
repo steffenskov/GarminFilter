@@ -34,6 +34,11 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 	{
 		var state = await _mediator.Send(new SyncStateGetSingleQuery(_appType), cancellationToken);
 
+		if (state?.ShouldRenewFullSync() == true)
+		{
+			state = await _mediator.Send(new SyncStateRenewCommand(_appType), cancellationToken);
+		}
+
 		if (state?.InitialSyncCompleted == true)
 		{
 			await SynchronizeLatestAsync(cancellationToken);

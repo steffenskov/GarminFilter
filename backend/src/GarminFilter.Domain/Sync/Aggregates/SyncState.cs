@@ -7,6 +7,7 @@ public record SyncState : IAggregate<AppType>
 {
 	public int? PageIndex { get; private init; }
 	public bool InitialSyncCompleted { get; private init; }
+	public DateOnly? LastFullSync { get; private init; }
 	public required AppType Id { get; init; }
 
 	public SyncState With(SyncStatePageMovedCommand command)
@@ -27,7 +28,31 @@ public record SyncState : IAggregate<AppType>
 		return this with
 		{
 			PageIndex = null,
-			InitialSyncCompleted = true
+			InitialSyncCompleted = true,
+			LastFullSync = command.CompletedAt
 		};
+	}
+
+	public SyncState With(SyncStateRenewCommand command)
+	{
+		if (!InitialSyncCompleted)
+		{
+			throw new InvalidOperationException("Cannot renew a state that hasn't yet completed initial sync.");
+		}
+
+		return this with
+		{
+			PageIndex = null,
+			InitialSyncCompleted = false
+		};
+	}
+}
+
+public static class SyncStateExtensions
+{
+	public static bool ShouldRenewFullSync(this SyncState state)
+	{
+		return state.InitialSyncCompleted
+		       && (state.LastFullSync is null || (DateTime.UtcNow - new DateTime(state.LastFullSync.Value, TimeOnly.MinValue, DateTimeKind.Utc)).TotalDays >= 7);
 	}
 }
