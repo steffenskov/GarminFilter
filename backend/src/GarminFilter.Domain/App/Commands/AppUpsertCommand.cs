@@ -4,9 +4,9 @@ using GarminFilter.SharedKernel.App.Entities;
 
 namespace GarminFilter.Domain.App.Commands;
 
-public record AppUpsertCommand(IGarminApp App) : IRequest;
+public record AppUpsertCommand(IGarminApp App) : IRequest<AppAggregate>;
 
-file sealed class Handler : IRequestHandler<AppUpsertCommand>
+file sealed class Handler : IRequestHandler<AppUpsertCommand, AppAggregate>
 {
 	private readonly IAppRepository _repository;
 
@@ -15,11 +15,11 @@ file sealed class Handler : IRequestHandler<AppUpsertCommand>
 		_repository = repository;
 	}
 
-	public Task Handle(AppUpsertCommand request, CancellationToken cancellationToken)
+	public Task<AppAggregate> Handle(AppUpsertCommand request, CancellationToken cancellationToken)
 	{
 		var app = AppAggregate.FromGarmin(request.App);
 
 		_repository.Upsert(app);
-		return Task.CompletedTask;
+		return Task.FromResult(app);
 	}
 }

@@ -27,11 +27,23 @@ internal class GarminClient : IGarminClient
 		return JsonSerializer.Deserialize<GarminDevice[]>(json, _jsonSerializerOptions) ?? throw new JsonException("Failed to deserialize devices");
 	}
 
-	public async Task<Stream> GetFileAsync(string fileId, CancellationToken cancellationToken = default)
+	public async Task<Stream> GetFileAsync(Guid fileId, CancellationToken cancellationToken = default)
 	{
 		var url = $"https://services.garmin.com/appsLibraryExternalServices/api/icons/{fileId}";
 		using var client = _httpClientFactory.CreateClient(nameof(GarminClient));
 		return await client.GetStreamAsync(url, cancellationToken);
+	}
+
+	public async Task<GarminApp> GetAppAsync(AppId appId, CancellationToken cancellationToken = default)
+	{
+		var url = $"https://apps.garmin.com/api/appsLibraryExternalServices/api/asw/apps/{appId}";
+		using var client = _httpClientFactory.CreateClient(nameof(GarminClient));
+		var response = await client.GetAsync(url, cancellationToken);
+		response.EnsureSuccessStatusCode();
+
+		var json = await response.Content.ReadAsStringAsync(cancellationToken);
+
+		return JsonSerializer.Deserialize<GarminApp>(json, _jsonSerializerOptions) ?? throw new JsonException("Failed to deserialize apps");
 	}
 
 	public async Task<IList<GarminApp>> GetAppsAsync(int pageIndex, AppType type, CancellationToken cancellationToken = default)

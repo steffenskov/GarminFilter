@@ -10,7 +10,7 @@ public class AppViewModel
 		Id = app.Id;
 		Name = app.Name;
 		Type = app.Type;
-		ImageUrl = $"/app/{app.IconFileId}";
+		ImageUrl = $"/app/{app.Id}/{app.IconFileId}";
 		Url = $"https://apps.garmin.com/apps/{app.Id}";
 		IsPaid = app.IsPaid;
 		Permissions = app.RequiredPermissions
