@@ -10,4 +10,3 @@
 # Bugs
 
 - Apps deleted from Garmin still remain in this database, some cleanup job is needed
-- Some watchfaces do not show images, despite an image existing

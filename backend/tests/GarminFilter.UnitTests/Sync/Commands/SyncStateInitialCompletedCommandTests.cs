@@ -15,7 +15,7 @@ public class SyncStateInitialCompletedCommandTests
 			Id = AppTypes.WatchFace
 		}.With(new SyncStatePageMovedCommand(AppTypes.WatchFace, 20));
 
-		var command = new SyncStateInitialCompletedCommand(AppTypes.WatchFace);
+		var command = new SyncStateInitialCompletedCommand(AppTypes.WatchFace, TimeProvider.System.GetUtcNowDate());
 
 		// Act
 		var result = aggregate.With(command);
@@ -33,9 +33,10 @@ public class SyncStateInitialCompletedCommandTests
 		var aggregate = new SyncState
 		{
 			Id = AppTypes.WatchFace
-		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace));
+		};
 
-		var command = new SyncStateInitialCompletedCommand(AppTypes.WatchFace);
+		var command = new SyncStateInitialCompletedCommand(AppTypes.WatchFace, TimeProvider.System.GetUtcNowDate());
+		aggregate = aggregate.With(command);
 
 		// Act
 		var result = aggregate.With(command);

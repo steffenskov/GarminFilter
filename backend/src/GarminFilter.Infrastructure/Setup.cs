@@ -23,6 +23,7 @@ public static class Setup
 		var db = new LiteDatabase(dbName, mapper);
 		services.AddSingleton(db);
 		services.AddSingleton(delayPolicy);
+		services.AddSingleton(TimeProvider.System);
 		services.AddSingleton<IDeviceRepository, DeviceRepository>();
 		services.AddSingleton<IAppRepository, AppRepository>();
 		services.AddSingleton<ISyncStateRepository, SyncStateRepository>();

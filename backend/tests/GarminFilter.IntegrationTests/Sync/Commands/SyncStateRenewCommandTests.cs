@@ -5,43 +5,40 @@ using GarminFilter.SharedKernel.App.ValueObjects;
 
 namespace GarminFilter.IntegrationTests.Sync.Commands;
 
-public class SyncStateInitialCompletedCommandTests : BaseTests
+public class SyncStateRenewCommandTests : BaseTests
 {
 	private readonly IMediator _mediator;
 	private readonly ISyncStateRepository _repository;
 
-	public SyncStateInitialCompletedCommandTests(ContainerFixture fixture) : base(fixture)
+	public SyncStateRenewCommandTests(ContainerFixture fixture) : base(fixture)
 	{
 		_mediator = fixture.Provider.GetRequiredService<IMediator>();
 		_repository = fixture.Provider.GetRequiredService<ISyncStateRepository>();
 	}
 
 	[Fact]
-	public async Task SyncStateInitialCompletedCommand_DoesNotExist_IsCreated()
+	public async Task SyncStateRenewCommand_DoesNotExist_Throws()
 	{
 		// Arrange
-		var command = new SyncStateInitialCompletedCommand(AppTypes.DataField, DateOnly.MinValue);
+		var command = new SyncStateRenewCommand(AppTypes.Music);
 
-		// Act
-		var result = await _mediator.Send(command);
+		// Act && Assert
+		var ex = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _mediator.Send(command));
 
 		// Assert
-		var fetched = _repository.GetSingle(command.Type);
-		Assert.NotNull(result);
-		Assert.Equal(result, fetched);
-		Assert.True(result.InitialSyncCompleted);
+		Assert.StartsWith($"SyncState not found: {AppTypes.Music}", ex.Message);
 	}
 
 	[Fact]
-	public async Task SyncStateInitialCompletedCommand_AlreadyExists_IsUpdated()
+	public async Task SyncStateRenewCommand_Exists_IsUpdated()
 	{
 		// Arrange
 		_repository.Upsert(new SyncState
 		{
 			Id = AppTypes.WatchFace
-		});
-		var command = new SyncStateInitialCompletedCommand(AppTypes.WatchFace, DateOnly.MinValue);
+		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace,TimeProvider.System.GetUtcNowDate())));
 
+		var command = new SyncStateRenewCommand(AppTypes.WatchFace);
 		// Act
 		var result = await _mediator.Send(command);
 
@@ -49,6 +46,6 @@ public class SyncStateInitialCompletedCommandTests : BaseTests
 		var fetched = _repository.GetSingle(command.Type);
 		Assert.NotNull(result);
 		Assert.Equal(result, fetched);
-		Assert.True(result.InitialSyncCompleted);
+		Assert.False(result.InitialSyncCompleted);
 	}
 }

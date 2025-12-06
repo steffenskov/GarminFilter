@@ -9,10 +9,13 @@ public class SyncStatusViewModel
 	{
 		Type = type;
 		InitialSyncCompleted = state?.InitialSyncCompleted == true;
+		PageIndex = state?.PageIndex ?? 0;
 		Count = count;
 	}
 
 	public int Count { get; }
 	public bool InitialSyncCompleted { get; }
+	public int PageIndex { get; }
+
 	public AppType Type { get; }
 }

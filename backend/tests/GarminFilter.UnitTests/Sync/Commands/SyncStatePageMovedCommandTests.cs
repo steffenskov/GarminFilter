@@ -13,7 +13,7 @@ public class SyncStatePageMovedCommandTests
 		var aggregate = new SyncState
 		{
 			Id = AppTypes.WatchFace
-		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace));
+		}.With(new SyncStateInitialCompletedCommand(AppTypes.WatchFace, TimeProvider.System.GetUtcNowDate()));
 
 		var command = new SyncStatePageMovedCommand(AppTypes.WatchFace, 30);
 
