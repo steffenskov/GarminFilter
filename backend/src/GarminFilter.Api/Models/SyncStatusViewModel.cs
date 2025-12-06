@@ -11,7 +11,10 @@ public class SyncStatusViewModel
 		InitialSyncCompleted = state?.InitialSyncCompleted == true;
 		PageIndex = state?.PageIndex ?? 0;
 		Count = count;
+		LastFullSync = state?.LastFullSync;
 	}
+
+	public DateOnly? LastFullSync { get;  }
 
 	public int Count { get; }
 	public bool InitialSyncCompleted { get; }
