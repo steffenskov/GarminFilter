@@ -52,7 +52,9 @@ public static class SyncStateExtensions
 {
 	public static bool ShouldRenewFullSync(this SyncState state)
 	{
+		var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
 		return state.InitialSyncCompleted
-		       && (state.LastFullSync is null || (DateTime.UtcNow - new DateTime(state.LastFullSync.Value, TimeOnly.MinValue, DateTimeKind.Utc)).TotalDays >= 7);
+		       && (state.LastFullSync is null || today.DayNumber - state.LastFullSync.Value.DayNumber >= 7);
 	}
 }
