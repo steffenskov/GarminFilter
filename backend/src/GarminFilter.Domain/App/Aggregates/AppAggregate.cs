@@ -24,6 +24,8 @@ public record AppAggregate : IAggregate<AppId>
 
 	public decimal WeightedAverageRating { get; private init; }
 
+	public long CreationDate { get; private init; }
+
 	public AppId Id { get; private init; } = default!;
 
 	public static AppAggregate FromGarmin(IGarminApp garminApp)
@@ -32,6 +34,7 @@ public record AppAggregate : IAggregate<AppId>
 		{
 			SupportedDevices = garminApp.CompatibleDeviceTypeIds,
 			ReleaseDate = garminApp.ReleaseDate,
+			CreationDate = garminApp.FirstApprovalDate, // First approval date is apparently the one showed on ConnectIQ as "Initial Release"
 			DeveloperName = garminApp.Developer?.DeveloperDisplayName ?? "Unknown Developer",
 			RequiredPermissions = garminApp.Permissions,
 			IconFileId = garminApp.IconFileId,

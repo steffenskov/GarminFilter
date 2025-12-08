@@ -275,7 +275,14 @@ class _GarminFilterHomePageState extends State<GarminFilterHomePage> {
                                                   const SizedBox(height: 2),
                                                   Text(watchface.developer, style: const TextStyle(fontSize: 12, color: Colors.grey)),
                                                   const SizedBox(height: 2),
-                                                  Text(watchface.releaseDate, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+
+                                                  Row(
+                                                    children: [
+                                                      Text(watchface.creationDate, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                                      const Icon(Icons.star, size: 12, color: Colors.amber),
+                                                      Text(' (updated ${watchface.releaseDate})', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                                    ],
+                                                  ),
 
                                                   const SizedBox(height: 2),
                                                   Row(

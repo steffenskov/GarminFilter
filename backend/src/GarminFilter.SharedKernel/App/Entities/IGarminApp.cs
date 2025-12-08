@@ -7,6 +7,7 @@ public interface IGarminApp
 {
 	HashSet<DeviceId> CompatibleDeviceTypeIds { get; }
 	long ReleaseDate { get; }
+	long FirstApprovalDate { get; }
 	AppDeveloper? Developer { get; }
 	HashSet<AppPermission> Permissions { get; }
 

@@ -13,6 +13,7 @@ class AppViewModel {
   final double weightedAverageRating;
   final int reviewCount;
   final String releaseDate;
+  final String creationDate;
 
   AppViewModel({
     required this.permissions,
@@ -27,6 +28,7 @@ class AppViewModel {
     required this.weightedAverageRating,
     required this.reviewCount,
     required this.releaseDate,
+    required this.creationDate,
   });
 
   factory AppViewModel.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class AppViewModel {
       weightedAverageRating: (json['weightedAverageRating'] as num?)?.toDouble() ?? 0.0,
       reviewCount: json['reviewCount'] as int? ?? 0,
       releaseDate: json['releaseDate'] as String,
+      creationDate: json['creationDate'] as String,
     );
   }
 }

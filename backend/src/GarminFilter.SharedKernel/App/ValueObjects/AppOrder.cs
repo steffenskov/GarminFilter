@@ -22,5 +22,6 @@ public enum AppOrders
 	Newest,
 	Rating,
 	ReviewCount,
-	WeightedRating
+	WeightedRating,
+	LatestUpdate
 }

@@ -83,8 +83,9 @@ internal class AppRepository : BaseAggregateRepository<AppAggregate, AppId>, IAp
 		{
 			AppOrders.ReviewCount => nameof(AppAggregate.ReviewCount),
 			AppOrders.Rating => nameof(AppAggregate.RatingSortKey),
-			AppOrders.Newest => nameof(AppAggregate.ReleaseDate),
+			AppOrders.Newest => nameof(AppAggregate.CreationDate),
 			AppOrders.WeightedRating => nameof(AppAggregate.WeightedAverageRating),
+			AppOrders.LatestUpdate => nameof(AppAggregate.ReleaseDate),
 			_ => throw new ArgumentOutOfRangeException(nameof(orderBy), orderBy, null)
 		};
 	}

@@ -8,6 +8,8 @@ public record GarminApp : IGarminApp
 {
 	public HashSet<DeviceId> CompatibleDeviceTypeIds { get; init; } = [];
 	public long ReleaseDate { get; init; }
+	public long FirstApprovalDate { get; init; }
+
 	public AppDeveloper? Developer { get; init; }
 	public HashSet<AppPermission> Permissions { get; init; } = [];
 

@@ -22,11 +22,13 @@ public class AppViewModel
 		WeightedAverageRating = app.WeightedAverageRating;
 		ReviewCount = app.ReviewCount;
 		ReleaseDate = DateTime.UnixEpoch.AddMilliseconds(app.ReleaseDate).ToString("MMM dd, yyyy");
+		CreationDate = DateTime.UnixEpoch.AddMilliseconds(app.CreationDate).ToString("MMM dd, yyyy");
 	}
 
 	public decimal WeightedAverageRating { get; }
 
 	public string ReleaseDate { get; }
+	public string CreationDate { get; }
 
 	public uint ReviewCount { get; }
 
