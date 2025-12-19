@@ -13,11 +13,14 @@ public class ApiScraperService : BackgroundService
 
 	protected async override Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		foreach (var synchronizer in _synchronizerFacades)
+		while (!stoppingToken.IsCancellationRequested)
 		{
-			await synchronizer.SynchronizeAsync(stoppingToken);
-		}
+			foreach (var synchronizer in _synchronizerFacades)
+			{
+				await synchronizer.SynchronizeAsync(stoppingToken);
+			}
 
-		await Task.Delay(TimeSpan.FromHours(6), stoppingToken); // Wait between attempting syncs once caught up
+			await Task.Delay(TimeSpan.FromHours(6), stoppingToken); // Wait between attempting syncs once caught up
+		}
 	}
 }
