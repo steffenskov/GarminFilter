@@ -28,7 +28,8 @@ public record DeviceViewModel
 		return name
 			.Replace("™", "")
 			.Replace("®", "")
-			.Replace("ē", "e");
+			.Replace("ē", "e")
+			.Replace("í", "i");
 	}
 
 	public static IEnumerable<DeviceViewModel> Create(DeviceAggregate deviceAggregate)
