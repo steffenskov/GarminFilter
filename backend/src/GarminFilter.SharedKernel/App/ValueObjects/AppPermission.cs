@@ -80,5 +80,7 @@ public enum AppPermissions
 	SensorHistory,
 
 	[Description("Your Garmin Connect™ fitness profile")]
-	UserProfile
+	UserProfile,
+
+	NotificationLaunch
 }
