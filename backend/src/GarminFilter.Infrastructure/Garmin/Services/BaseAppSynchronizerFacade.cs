@@ -55,13 +55,15 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 	private async Task SynchronizeLatestAsync(CancellationToken cancellationToken)
 	{
 		var pageIndex = 0;
+		var hasMorePages = true;
 
-		do
+		while (hasMorePages && !cancellationToken.IsCancellationRequested)
 		{
 			var apps = await _client.GetAppsAsync(pageIndex, _appType, cancellationToken);
 			if (apps.Count == 0)
 			{
-				return;
+				hasMorePages = false;
+				continue;
 			}
 
 			var existsCount = 0;
@@ -78,14 +80,20 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 				await _mediator.Send(new AppUpsertCommand(app), cancellationToken);
 			}
 
-			if (existsCount == apps.Count) // Found no new apps, break
+			// If all apps on this page already exist, we're done
+			if (existsCount == apps.Count)
 			{
 				_logger?.LogInformation("All apps fetched already exists, stopping {appType} sync.", _appType);
-				return;
+				hasMorePages = false;
+			}
+			else
+			{
+				// If we found new apps, continue to next page
+				pageIndex++;
 			}
 
 			await _delayPolicy.WaitForDelayAsync(cancellationToken); // Do not spam the API
-		} while ((pageIndex += Consts.App.PageSize) < int.MaxValue);
+		}
 	}
 
 	private async Task SynchronizeInitialAsync(SyncState? state, CancellationToken cancellationToken)
