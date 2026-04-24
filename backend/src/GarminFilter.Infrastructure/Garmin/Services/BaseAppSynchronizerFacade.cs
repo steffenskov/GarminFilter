@@ -60,6 +60,8 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 		while (hasMorePages && !cancellationToken.IsCancellationRequested)
 		{
 			var apps = await _client.GetAppsAsync(pageIndex, _appType, cancellationToken);
+			
+			// If no apps returned, we've reached the end
 			if (apps.Count == 0)
 			{
 				hasMorePages = false;
@@ -80,15 +82,16 @@ internal abstract class BaseAppSynchronizerFacade<TSelf> : ISynchronizerFacade
 				await _mediator.Send(new AppUpsertCommand(app), cancellationToken);
 			}
 
-			// If all apps on this page already exist, we're done
+			// If all apps on this page already exist, continue to next page
+			// This allows us to check if there are more pages with new apps
 			if (existsCount == apps.Count)
 			{
-				_logger?.LogInformation("All apps fetched already exists, stopping {appType} sync.", _appType);
-				hasMorePages = false;
+				_logger?.LogInformation("All apps on page {pageIndex} already exist, checking next page.", pageIndex);
+				pageIndex++;
 			}
 			else
 			{
-				// If we found new apps, continue to next page
+				// If we found new apps, continue to next page to check for more
 				pageIndex++;
 			}
 
