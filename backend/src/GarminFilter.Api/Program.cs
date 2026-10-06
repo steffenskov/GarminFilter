@@ -3,6 +3,7 @@ using GarminFilter.Api.Endpoints;
 using GarminFilter.Api.Services;
 using GarminFilter.Infrastructure;
 using GarminFilter.Infrastructure.Garmin.Policies;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,10 +39,7 @@ app.UseCors();
 app.MapOpenApi();
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwaggerUi(options =>
-	{
-		options.DocumentPath = "openapi/v1.json";
-	});
+	app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
