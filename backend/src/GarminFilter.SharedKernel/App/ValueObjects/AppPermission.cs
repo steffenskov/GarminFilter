@@ -82,5 +82,6 @@ public enum AppPermissions
 	[Description("Your Garmin Connect™ fitness profile")]
 	UserProfile,
 
-	NotificationLaunch
+	NotificationLaunch,
+	AudioOutput
 }
