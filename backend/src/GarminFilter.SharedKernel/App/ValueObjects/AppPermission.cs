@@ -83,5 +83,6 @@ public enum AppPermissions
 	UserProfile,
 
 	NotificationLaunch,
-	AudioOutput
+	AudioOutput,
+	AudioInput
 }
